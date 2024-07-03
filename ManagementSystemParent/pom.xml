@@ -16,6 +16,8 @@
     <packaging>pom</packaging>
 
     <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
@@ -23,8 +25,8 @@
         <mybatis-plus.version>3.5.3</mybatis-plus.version>
         <mysql.version>8.1.0</mysql.version>
         <druid.version>1.2.16</druid.version>
-        <spring.cloud.ali.version>2022.0.0.0</spring.cloud.ali.version>
-        <spring.cloud.version>2022.0.3</spring.cloud.version>
+        <spring.cloud.ali.version>2022.0.0.0-RC2</spring.cloud.ali.version>
+        <spring.cloud.version>2023.0.0</spring.cloud.version>
         <log4j.version>1.2.17</log4j.version>
         <spring.boot.version>3.1.0</spring.boot.version>
         <jakarta-servlet.version>6.0.0</jakarta-servlet.version>
@@ -86,6 +88,12 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-annotation</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
@@ -208,7 +216,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
