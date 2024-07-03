@@ -10,7 +10,7 @@
         <relativePath>../ManagementSystemParent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>ManagementSystemProject</artifactId>
+    <artifactId>ManagementSystemTask</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

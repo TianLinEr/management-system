@@ -1,7 +1,10 @@
 package com.project.service;
 
+import com.base.dto.ProjectDTO;
 import com.base.entity.Projects;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ProjectsService extends IService<Projects> {
 
+    List<ProjectDTO> getAllNotLogin();
 }

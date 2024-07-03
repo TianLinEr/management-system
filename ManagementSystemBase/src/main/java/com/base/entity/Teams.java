@@ -1,8 +1,8 @@
 package com.base.entity;
 
 import java.sql.Timestamp;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 
 /**
  * <p>
@@ -14,6 +14,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Teams {
 
     /**

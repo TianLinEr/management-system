@@ -1,4 +1,4 @@
-package com.project.config;
+package com.task.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -14,16 +14,16 @@ public class SwaggerConfig {
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
                 // 接口文档标题
-                .info(new Info().title("项目基础信息")
+                .info(new Info().title("任务基础信息")
                         // 接口文档简介
-                        .description("电力项目协作系统-项目基础信息")
+                        .description("电力项目协作系统-任务基础信息")
                         // 接口文档版本
                         .version("v1.0")
                         // 开发者联系方式
                         .contact(new Contact().name("psl").email("2370453803@qq.com")))
                 .externalDocs(new ExternalDocumentation()
                         .description("SpringBoot3.2.4")
-                        .url("http://localhost:8090"));
+                        .url("http://localhost:8091"));
     }
 }
 

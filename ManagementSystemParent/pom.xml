@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.system</groupId>
@@ -15,6 +15,12 @@
     <description>ManagementSystemParent</description>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>../ManagementSystemProject</module>
+        <module>../ManagementSystemBase</module>
+        <module>../ManagementSystemTask</module>
+    </modules>
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -22,7 +28,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
         <mybatis.version>3.0.0</mybatis.version>
-        <mybatis-plus.version>3.5.3</mybatis-plus.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <mysql.version>8.1.0</mysql.version>
         <druid.version>1.2.16</druid.version>
         <spring.cloud.ali.version>2022.0.0.0-RC2</spring.cloud.ali.version>
@@ -87,7 +93,7 @@
 
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
@@ -216,6 +222,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

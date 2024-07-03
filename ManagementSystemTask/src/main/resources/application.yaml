@@ -1,11 +1,11 @@
 server:
-  port: 8090
+  port: 8091
   servlet:
-    context-path: /project
+    context-path: /task
 #微服务配置
 spring:
   application:
-    name: project
+    name: task
   cloud:
     nacos:
       discovery:
