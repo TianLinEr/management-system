@@ -19,6 +19,10 @@
         <module>../ManagementSystemProject</module>
         <module>../ManagementSystemBase</module>
         <module>../ManagementSystemTask</module>
+        <module>../ManagementSystemDocument</module>
+        <module>../ManagementSystemUser</module>
+        <module>../ManagementSystemTeam</module>
+        <module>../ManagementSystemComment</module>
     </modules>
 
     <properties>
