@@ -1,16 +1,12 @@
 package com.base.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.base.entity.Projects;
-import com.base.entity.Users;
+import com.base.entity.Teams;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Data
 @ToString
@@ -34,23 +30,13 @@ public class ProjectDTO{
     private String projectContent;
 
     /**
-     * 团队Id
+     * 团队详情
      */
-    private Integer teamId;
-
-    /**
-     * 团队名称
-     */
-    private String teamName;
+    private Teams team;
 
     /**
      * 创建日期
      */
     private Timestamp createDate;
-
-    /**
-     * 团队成员
-     */
-    private List<Users> teamUsers;
 
 }

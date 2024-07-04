@@ -3,6 +3,13 @@ package com.base.content;
 public class ContentBase {
 
     /**
+     * code
+     */
+    public static final Integer ErrorCode=500;
+    public static final Integer SuccessCode=200;
+    public static final Integer NotFound=404;
+
+    /**
      * 项目是否公开
      */
     public static final Integer ProjectIsPublic=1;
@@ -43,4 +50,10 @@ public class ContentBase {
      */
     public static final Integer DocumentIsDel=1;
     public static final Integer DocumentNotIsDel=0;
+
+    /**
+     * 团队权限，是否可以删除
+     */
+    public static final Integer AuthorityToDel=0;
+    public static final Integer AuthorityNotToDel=1;
 }

@@ -19,6 +19,11 @@
         <module>../ManagementSystemProject</module>
         <module>../ManagementSystemBase</module>
         <module>../ManagementSystemTask</module>
+        <module>../ManagementSystemDocument</module>
+        <module>../ManagementSystemUser</module>
+        <module>../ManagementSystemTeam</module>
+        <module>../ManagementSystemComment</module>
+        <module>../ManagementSystemGateWay</module>
     </modules>
 
     <properties>
@@ -145,7 +150,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-configuration-processor</artifactId>
                 <version>${yaml.version}</version>
-                <optional>true</optional>
             </dependency>
             <!-- 工具类管理 -->
             <dependency>
@@ -217,6 +221,11 @@
                     <artifactId>log4j-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
 
         <dependency>

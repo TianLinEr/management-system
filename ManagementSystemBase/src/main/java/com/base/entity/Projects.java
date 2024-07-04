@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 /**
  * <p>
  * 
@@ -49,4 +51,9 @@ public class Projects {
      * 项目是否被删除，三天后销毁
      */
     private String projectState;
+
+    /**
+     * 项目创建日期
+     */
+    private Timestamp projectCreate;
 }
