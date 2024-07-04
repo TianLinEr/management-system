@@ -1,0 +1,16 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/management_system
+    username: root
+    password: 123456
+mybatis-plus:
+  mapper-locations: classpath:mapper/**.xml
+#日志文件配置路径
+logging:
+  level:
+    com:
+      api: debug
