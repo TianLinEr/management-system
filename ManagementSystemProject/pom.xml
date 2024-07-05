@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>com.system</groupId>
-            <artifactId>ManagementSystemBase</artifactId>
+            <artifactId>ManagementSystemService</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

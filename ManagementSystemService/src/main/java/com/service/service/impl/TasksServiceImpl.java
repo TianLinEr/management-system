@@ -1,8 +1,8 @@
-package com.base.service.impl;
+package com.service.service.impl;
 
 import com.base.entity.Tasks;
 import com.base.mapper.TasksMapper;
-import com.base.service.TasksService;
+import com.service.service.TasksService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

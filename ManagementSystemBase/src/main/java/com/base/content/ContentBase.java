@@ -56,4 +56,10 @@ public class ContentBase {
      */
     public static final Integer AuthorityToDel=0;
     public static final Integer AuthorityNotToDel=1;
+
+    /**
+     * 用户权限，管理员
+     */
+    public static final Integer AuthorityToUser=0;
+    public static final Integer AuthorityToAdmin=1;
 }

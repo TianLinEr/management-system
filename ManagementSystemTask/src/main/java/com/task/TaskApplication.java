@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan("com.base.mapper")
-@ComponentScan({"com.base","com.task"})
+@ComponentScan({"com.base","com.task","com.http", "com.service"})
 public class TaskApplication {
     public static void main(String[] args) {
         SpringApplication.run(TaskApplication.class,args);

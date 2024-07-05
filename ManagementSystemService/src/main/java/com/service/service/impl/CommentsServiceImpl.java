@@ -1,9 +1,9 @@
-package com.base.service.impl;
+package com.service.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.base.entity.Comments;
 import com.base.mapper.CommentsMapper;
-import com.base.service.CommentsService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.service.service.CommentsService;
 import org.springframework.stereotype.Service;
 
 /**

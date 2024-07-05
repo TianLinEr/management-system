@@ -2,6 +2,8 @@ package com.base.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import lombok.*;
@@ -19,7 +21,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Tasks {
+public class Tasks implements Serializable {
 
     /**
      * 任务Id
