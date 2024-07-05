@@ -1,8 +1,8 @@
-package com.base.service.impl;
+package com.service.service.impl;
 
 import com.base.entity.TeamUser;
 import com.base.mapper.TeamUserMapper;
-import com.base.service.TeamUserService;
+import com.service.service.TeamUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

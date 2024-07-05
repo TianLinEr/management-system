@@ -1,4 +1,4 @@
-package com.base.service;
+package com.service.service;
 
 import com.base.entity.ProjectDocument;
 import com.baomidou.mybatisplus.extension.service.IService;

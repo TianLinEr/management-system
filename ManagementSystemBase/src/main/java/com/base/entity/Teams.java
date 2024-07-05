@@ -1,5 +1,6 @@
 package com.base.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import lombok.*;
@@ -17,7 +18,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Teams {
+public class Teams implements Serializable {
 
     /**
      * 团队Id

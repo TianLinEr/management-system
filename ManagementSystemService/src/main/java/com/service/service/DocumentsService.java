@@ -1,6 +1,6 @@
-package com.base.service;
+package com.service.service;
 
-import com.base.entity.TeamUser;
+import com.base.entity.Documents;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author psl
  * @since 2024-07-03
  */
-public interface TeamUserService extends IService<TeamUser> {
+public interface DocumentsService extends IService<Documents> {
 
 }

@@ -2,6 +2,8 @@ package com.base.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import lombok.*;
@@ -19,7 +21,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Users {
+public class Users implements Serializable {
 
     /**
      * 用户Id
@@ -61,4 +63,9 @@ public class Users {
      * 用户邮箱
      */
     private String userEmail;
+
+    /**
+     * 用户权限
+     */
+    private String userType;
 }

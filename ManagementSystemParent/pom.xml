@@ -24,6 +24,8 @@
         <module>../ManagementSystemTeam</module>
         <module>../ManagementSystemComment</module>
         <module>../ManagementSystemGateWay</module>
+        <module>../ManagementSystemHttpClient</module>
+        <module>../ManagementSystemService</module>
     </modules>
 
     <properties>

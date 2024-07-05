@@ -6,9 +6,11 @@
     <file url="file://$PROJECT_DIR$/ManagementSystemComment/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemDocument/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemGateWay/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ManagementSystemHttpClient/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemParent/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemParent/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemProject/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ManagementSystemService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemTask/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemTeam/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ManagementSystemUser/src/main/java" charset="UTF-8" />

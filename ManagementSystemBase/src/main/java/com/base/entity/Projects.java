@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -19,7 +20,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Projects {
+public class Projects implements Serializable {
 
     /**
      * 项目Id
@@ -40,7 +41,7 @@ public class Projects {
     /**
      * 团队Id
      */
-    private Integer teamId;
+    private String teamId;
 
     /**
      * 项目是否被公开

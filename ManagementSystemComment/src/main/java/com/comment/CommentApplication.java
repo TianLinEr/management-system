@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan("com.base.mapper")
-@ComponentScan({"com.base","com.comment"})
+@ComponentScan({"com.base","com.comment","com.http", "com.service"})
 public class CommentApplication {
 
     public static void main(String[] args) {
