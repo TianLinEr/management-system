@@ -3,38 +3,41 @@ package com.http.client;
 import com.base.dto.ProjectDTO;
 import com.base.entity.Projects;
 import com.base.utils.Result;
-import com.base.vo.PageVO;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.service.annotation.*;
 
 
-@HttpExchange("/project")
+@HttpExchange("http://127.0.0.1:10010/project")
 public interface ProjectHttp {
 
     /**
      * 获取所有项目
-     * @param pageVO
      * @return
      */
     @GetExchange("/all")
-    Result<ProjectDTO> getAll(PageVO pageVO);
+    Result<ProjectDTO> getAll();
 
     /**
      * 获取所有公开项目
-     * @param pageVO
      * @return
      */
     @GetExchange("/all/public")
-    Result<ProjectDTO> getAllPublic(PageVO pageVO);
+    Result<ProjectDTO> getAllPublic();
 
 
     /**
      * 获取我的项目
-     * @param pageVO
      * @return
      */
     @GetExchange("/all/my_project")
-    Result<ProjectDTO> getMyProject(PageVO pageVO);
+    Result<ProjectDTO> getMyProject();
+
+    /**
+     * 根据Id获取项目
+     * @return
+     */
+    @GetExchange("/{id}")
+    Result<ProjectDTO> getById(@PathVariable String id);
 
     /**
      * 修改项目

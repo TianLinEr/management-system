@@ -2,6 +2,9 @@ package com.base.excepttion;
 
 import lombok.Getter;
 
+/**
+ * 用户类型异常
+ */
 @Getter
 public class UserTypeException extends RuntimeException{
     private final Integer errorCode;

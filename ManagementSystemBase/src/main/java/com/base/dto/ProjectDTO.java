@@ -39,4 +39,9 @@ public class ProjectDTO{
      */
     private Timestamp createDate;
 
+    /**
+     * 项目是否被删除，三天后销毁
+     */
+    private String projectState;
+
 }

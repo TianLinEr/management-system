@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8096
   servlet:
     context-path: /project
 #微服务配置

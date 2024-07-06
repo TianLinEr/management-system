@@ -32,7 +32,7 @@ public class TeamUser implements Serializable {
     /**
      * 团队Id
      */
-    private Integer teamId;
+    private String teamId;
 
     /**
      * 用户Id

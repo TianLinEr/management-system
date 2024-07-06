@@ -8,6 +8,7 @@
         <result column="project_name" property="projectName"/>
         <result column="project_content" property="projectContent"/>
         <result column="project_create" property="createDate"/>
+        <result column="project_state" property="projectState"/>
         <collection property="team" ofType="com.base.entity.Teams">
             <id column="team_id" property="teamId"/>
             <result column="create_date" property="createDate"/>
@@ -18,21 +19,17 @@
 
     <select id="getAll" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,t.*
-        from (
-            select * from projects p
-                limit #{page_vo.pageNo},#{page_vo.pageSize}
-            ) as p2
+             ,p2.project_name,p2.project_state,t.*
+        from projects p2
         inner join teams t on p2.team_id=t.team_id
     </select>
 
     <select id="getAllPublic" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,t.*
+             ,p2.project_name,p2.project_state,t.*
             from (
                 select * from projects p
                     where p.project_type=#{project_type} and p.project_state=#{project_state}
-                    limit #{page_vo.pageNo},#{page_vo.pageSize}
                 ) as p2
             inner join teams t on p2.team_id=t.team_id
     </select>
@@ -40,7 +37,7 @@
 
     <select id="getMyProject" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,t.*
+             ,p2.project_name,p2.project_state,t.*
         from (
             select * from projects p
                 where p.project_type=#{project_type}
@@ -48,7 +45,6 @@
                 and p.team_id in (
                     select team_id from team_user where user_id=#{user_id}
                 )
-                limit #{page_vo.pageNo},#{page_vo.pageSize}
             ) as p2
         inner join teams t on p2.team_id=t.team_id
     </select>
