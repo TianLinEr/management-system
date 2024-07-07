@@ -7,6 +7,9 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import java.io.*;
 
+/**
+ * 包装请求体，使其支持流式读取
+ */
 public class HttpRequestWrapper extends HttpServletRequestWrapper {
     private final String body;
 

@@ -48,12 +48,7 @@ spring:
           '[/**]':
             # 后端之间的http请求不需要配置，只需配置ajax请求
             allowedOrigins: # 允许哪些网站跨域
-              - "http://localhost:8090"
-              - "http://localhost:8091"
-              - "http://localhost:8092"
-              - "http://localhost:8093"
-              - "http://localhost:8094"
-              - "http://localhost:8095"
+              - "http://localhost:8080"
             allowed-methods:
               - "GET"
               - "POST"

@@ -2,6 +2,9 @@ package com.base.excepttion;
 
 import lombok.Getter;
 
+/**
+ * 项目权限不足
+ */
 @Getter
 public class NoAuthorityUpdateProjectException extends RuntimeException{
     private final Integer errorCode;

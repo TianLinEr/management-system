@@ -2,6 +2,9 @@ package com.base.excepttion;
 
 import lombok.Getter;
 
+/**
+ * 过滤器异常
+ */
 @Getter
 public class FilterHeaderException extends RuntimeException{
 

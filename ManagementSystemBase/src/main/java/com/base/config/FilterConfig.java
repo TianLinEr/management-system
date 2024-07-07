@@ -7,6 +7,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FilterConfig {
 
+    /**
+     * 注册过滤器
+     * @return
+     */
     @Bean
     public FilterRegistrationBean<MyFilter> myFilter() {
         FilterRegistrationBean<MyFilter> registrationBean = new FilterRegistrationBean<>();

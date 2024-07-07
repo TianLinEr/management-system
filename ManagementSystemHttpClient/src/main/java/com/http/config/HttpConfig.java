@@ -10,7 +10,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration(proxyBeanMethods = false)
 public class HttpConfig {
     @Bean
-    public ProjectHttp requestService1() {
+    public ProjectHttp projectHttp() {
         WebClient webClient = WebClient.builder().build();
         return HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient))
@@ -19,7 +19,7 @@ public class HttpConfig {
     }
 
     @Bean
-    public CommentHttp requestService2() {
+    public CommentHttp commentHttp() {
         WebClient webClient = WebClient.builder().build();
         return HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient))
@@ -28,7 +28,7 @@ public class HttpConfig {
     }
 
     @Bean
-    public DocumentHttp requestService3() {
+    public DocumentHttp documentHttp() {
         WebClient webClient = WebClient.builder().build();
         return HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient))
@@ -37,7 +37,7 @@ public class HttpConfig {
     }
 
     @Bean
-    public TaskHttp requestService4() {
+    public TaskHttp taskHttp() {
         WebClient webClient = WebClient.builder().build();
         return HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient))
@@ -46,7 +46,7 @@ public class HttpConfig {
     }
 
     @Bean
-    public UserHttp requestService5() {
+    public UserHttp userHttp() {
         WebClient webClient = WebClient.builder().build();
         return HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient))
@@ -55,7 +55,7 @@ public class HttpConfig {
     }
 
     @Bean
-    public TeamHttp requestService6() {
+    public TeamHttp teamHttp() {
         WebClient webClient = WebClient.builder().build();
         return HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient))

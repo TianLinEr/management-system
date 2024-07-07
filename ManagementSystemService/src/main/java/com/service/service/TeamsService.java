@@ -13,4 +13,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface TeamsService extends IService<Teams> {
 
+    void addTeam(String team);
+
+    void addTeamUserLS(String teamId, String id);
+
+    Integer getUserAuthority(Integer userId, String teamId);
 }

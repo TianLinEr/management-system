@@ -1,5 +1,8 @@
 package com.base.content;
 
+/**
+ * 一些固定常数内容
+ */
 public class ContentBase {
 
     /**
@@ -62,4 +65,17 @@ public class ContentBase {
      */
     public static final Integer AuthorityToUser=0;
     public static final Integer AuthorityToAdmin=1;
+
+    /**
+     * 被评论类型
+     */
+    public static final Integer ProjectType=0;
+    public static final Integer TaskType=1;
+    public static final Integer DocumentType=2;
+
+    /**
+     * 评论是否被删除
+     */
+    public static final Integer CommentIsDel=1;
+    public static final Integer CommentNotIsDel=0;
 }

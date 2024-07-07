@@ -14,6 +14,9 @@ import reactor.core.publisher.Mono;
 @Component
 // order 里的值越小，优先级越高,值一样时，先default-filters，再filter，最后global
 @Order(1)
+/**
+ * 过滤器，全局过滤器
+ */
 public class AuthorizeFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

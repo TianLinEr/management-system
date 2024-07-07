@@ -4,6 +4,9 @@ import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginPars
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
+/**
+ * 自定义请求来源解析器
+ */
 @Component
 public class HeaderOriginParser implements RequestOriginParser {
 
