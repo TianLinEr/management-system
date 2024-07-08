@@ -2,6 +2,13 @@ server:
   port: 8092
   servlet:
     context-path: /document
+minio:
+#  todo 配置minio的地址和端口
+  endpoint: http://127.0.0.1:9005
+  accessKey: F4VJ7SEYvDvg8wH5kidA
+  secretKey: nOcyCTT5aQjTbYUeAnnkd3bQ4JX61pwlOsJKcRoM
+  bucketName: ms-admin
+  secure: false
 #微服务配置
 spring:
   application:
@@ -19,6 +26,11 @@ spring:
     url: jdbc:mysql://localhost:3306/management_system
     username: root
     password: 123456
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+
 #日志文件配置路径
 logging:
   level:

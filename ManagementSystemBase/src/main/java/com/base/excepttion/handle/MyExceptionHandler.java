@@ -55,7 +55,7 @@ public class MyExceptionHandler {
     }
 
     @ExceptionHandler(AddCommentException.class)
-    public ResponseEntity<Object> handleMyCustomException5(AddCommentException ex) {
+    public ResponseEntity<Object> handleMyCustomException6(AddCommentException ex) {
         // 创建你的响应体
         Result<Object> result = new Result<>().error(ex.getErrorCode(), ex.getMsg());
 
@@ -63,7 +63,31 @@ public class MyExceptionHandler {
     }
 
     @ExceptionHandler(NoAuthorityUpdateCommentException.class)
-    public ResponseEntity<Object> handleMyCustomException5(NoAuthorityUpdateCommentException ex) {
+    public ResponseEntity<Object> handleMyCustomException7(NoAuthorityUpdateCommentException ex) {
+        // 创建你的响应体
+        Result<Object> result = new Result<>().error(ex.getErrorCode(), ex.getMsg());
+
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(ex.getErrorCode()));
+    }
+
+    @ExceptionHandler(DocumentUploadException.class)
+    public ResponseEntity<Object> handleMyCustomException8(DocumentUploadException ex) {
+        // 创建你的响应体
+        Result<Object> result = new Result<>().error(ex.getErrorCode(), ex.getMsg());
+
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(ex.getErrorCode()));
+    }
+
+    @ExceptionHandler(AddDocumentException.class)
+    public ResponseEntity<Object> handleMyCustomException9(AddDocumentException ex) {
+        // 创建你的响应体
+        Result<Object> result = new Result<>().error(ex.getErrorCode(), ex.getMsg());
+
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(ex.getErrorCode()));
+    }
+
+    @ExceptionHandler(NoAuthorityUpdateDocumentException.class)
+    public ResponseEntity<Object> handleMyCustomException10(NoAuthorityUpdateDocumentException ex) {
         // 创建你的响应体
         Result<Object> result = new Result<>().error(ex.getErrorCode(), ex.getMsg());
 
