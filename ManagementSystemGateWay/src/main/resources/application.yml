@@ -23,25 +23,25 @@ spring:
           uri: lb://comment
           predicates:
             - Path= /comment/**
-        - id: project
+        - id: document
           uri: lb://document
           predicates:
             - Path= /document/**
-        - id: comment
+        - id: task
           uri: lb://task
           predicates:
             - Path= /task/**
-        - id: project
+        - id: team
           uri: lb://team
           predicates:
             - Path= /team/**
-        - id: comment
+        - id: user
           uri: lb://user
           predicates:
             - Path= /user/**
       default-filters:
         - AddRequestHeader=Truth,666 wotaiqiangla
-        - AddRequestHeader=origin,gateway
+        - AddRequestHeader=wg,gateway
       globalcors:
         add-to-simple-url-handler-mapping: true # 解决options的请求拦截
         cors-configurations:
@@ -49,6 +49,7 @@ spring:
             # 后端之间的http请求不需要配置，只需配置ajax请求
             allowedOrigins: # 允许哪些网站跨域
               - "http://localhost:8080"
+              - "http://10.136.22.186:8080"
             allowed-methods:
               - "GET"
               - "POST"

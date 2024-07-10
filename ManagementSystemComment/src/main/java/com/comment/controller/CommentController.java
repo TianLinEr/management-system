@@ -1,6 +1,7 @@
 package com.comment.controller;
 
 import com.base.content.ContentBase;
+import com.base.context.BaseContext;
 import com.base.dto.CommentDTO;
 import com.base.entity.Comments;
 import com.base.utils.Result;
@@ -51,8 +52,7 @@ public class CommentController {
     @PostMapping("/add")
     @Operation(summary = "添加评论")
     public Result addComment(@RequestBody Comments comments) {
-        String userId = "1";
-        //todo 获取用户id
+        String userId = BaseContext.getCurrentId().toString();
         if(comments.getCommentId() == null)
             comments.setCommentId(Integer.valueOf(userId));
 
@@ -64,8 +64,7 @@ public class CommentController {
     @DeleteMapping("/delete/{commentId}")
     @Operation(summary = "删除评论")
     public Result deleteComment(@PathVariable String commentId) {
-        String userId = "1";
-        //todo 获取用户id
+        String userId = BaseContext.getCurrentId().toString();
         commentsService.deleteComment(userId,commentId);
         log.info("评论管理-删除评论-删除成功");
         return new Result<>(ContentBase.SuccessCode,"删除成功", null);
@@ -74,8 +73,7 @@ public class CommentController {
     @PutMapping("/update")
     @Operation(summary = "更新评论")
     public Result updateComment(@RequestBody Comments comments) {
-        String userId = "1";
-        //todo 获取用户id
+        String userId = BaseContext.getCurrentId().toString();
         commentsService.updateComment(userId,comments);
         log.info("评论管理-更新评论-更新成功");
         return new Result<>(ContentBase.SuccessCode,"更新成功", null);
@@ -84,8 +82,7 @@ public class CommentController {
     @PutMapping("/revoke")
     @Operation(summary = "撤销删除的评论")
     public Result revokeComment(@RequestBody Comments comments) {
-        String userId = "1";
-        //todo 获取用户id
+        String userId = BaseContext.getCurrentId().toString();
         commentsService.revokeComment(userId,comments);
         log.info("评论管理-撤销删除的评论-撤销成功");
         return new Result<>(ContentBase.SuccessCode,"撤销成功", null);

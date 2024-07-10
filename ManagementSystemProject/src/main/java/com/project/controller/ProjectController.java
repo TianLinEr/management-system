@@ -1,6 +1,7 @@
 package com.project.controller;
 
 import com.base.content.ContentBase;
+import com.base.context.BaseContext;
 import com.base.dto.ProjectDTO;
 import com.base.entity.Projects;
 import com.base.utils.Result;
@@ -25,9 +26,8 @@ public class ProjectController {
     @GetMapping("/all")
     @Operation(summary = "获取所有项目")
     public Result<ProjectDTO> getAll(){
-        String id="1";
-        // todo 未完成
-        List<ProjectDTO> projectDTOList = projectsService.getAll(id);
+        String userId = BaseContext.getCurrentId().toString();
+        List<ProjectDTO> projectDTOList = projectsService.getAll(userId);
         log.info("项目管理-获取所有项目-查询成功");
         return new Result<ProjectDTO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
     }
@@ -41,18 +41,18 @@ public class ProjectController {
     }
 
     //todo 时区问题
+    //todo 项目是否公开改为项目类别
 
     @GetMapping("/all/my_project")
     @Operation(summary = "获取与我相关的项目")
     public Result<ProjectDTO> getMyProject(){
-        String id="1";
-        // todo 未完成
-        List<ProjectDTO> projectDTOList = projectsService.getMyProject(id);
+        String userId = BaseContext.getCurrentId().toString();
+        List<ProjectDTO> projectDTOList = projectsService.getMyProject(userId);
         log.info("项目管理-获取与我相关的项目-查询成功");
         return new Result<ProjectDTO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/all/{id}")
     @Operation(summary = "根据id获取项目")
     Result<ProjectDTO> getById(@PathVariable String id){
         List<ProjectDTO> projectDTOList = new ArrayList<>();
@@ -65,9 +65,9 @@ public class ProjectController {
     @PutMapping("/update")
     @Operation(summary = "修改项目")
     public Result updateByProject(@RequestBody Projects projects){
-        String id="1";
-        // todo 未完成
-        projectsService.updateByProject(id,projects);
+        String userId = BaseContext.getCurrentId().toString();
+
+        projectsService.updateByProject(userId,projects);
         log.info("项目管理-修改项目-修改成功");
         return new Result<>().success(ContentBase.SuccessCode,"修改成功",null);
     }
@@ -75,9 +75,9 @@ public class ProjectController {
     @DeleteMapping("/del")
     @Operation(summary = "删除项目")
     public Result DelByProjectId(@RequestBody Projects projects){
-        String id="1";
-        // todo 未完成
-        projectsService.delByProjectId(id,projects);
+        String userId = BaseContext.getCurrentId().toString();
+
+        projectsService.delByProjectId(userId,projects);
         log.info("项目管理-删除项目-删除成功");
         return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
     }
@@ -85,9 +85,9 @@ public class ProjectController {
     @PutMapping("/revoke")
     @Operation(summary = "撤销删除项目")
     public Result revokeProject(@RequestBody Projects projects){
-        String id="1";
-        // todo 未完成
-        projectsService.revokeProject(id,projects);
+        String userId = BaseContext.getCurrentId().toString();
+
+        projectsService.revokeProject(userId,projects);
         log.info("项目管理-撤销删除项目-撤销成功");
         return new Result<>().success(ContentBase.SuccessCode,"撤销成功",null);
     }
@@ -95,8 +95,9 @@ public class ProjectController {
     @PostMapping("/add")
     @Operation(summary = "新增项目")
     public Result addProject(@RequestBody Projects projects){
-        String id="1";
-        projectsService.addProject(id,projects);
+        String userId = BaseContext.getCurrentId().toString();
+
+        projectsService.addProject(userId,projects);
         log.info("项目管理-新增项目-添加成功");
         return new Result<>().success(ContentBase.SuccessCode,"新增成功",null);
     }

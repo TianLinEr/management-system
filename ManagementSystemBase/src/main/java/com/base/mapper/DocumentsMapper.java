@@ -20,21 +20,45 @@ import java.util.List;
 public interface DocumentsMapper extends BaseMapper<Documents> {
 
 
+    /**
+     * 删除文档
+     * @param projectId
+     * @param fileName
+     * @param state
+     */
     void delete(@Param("projectId") String projectId,
                 @Param("fileName") String fileName,
                 @Param("state") String state);
 
+    /**
+     * 恢复文档
+     * @param projectId
+     * @param fileName
+     * @param state
+     */
     void revoke(@Param("projectId") String projectId,
                 @Param("fileName") String fileName,
                 @Param("state") String state);
 
+    /**
+     * 查询文档
+     * @param projectId
+     * @param fileName
+     * @return
+     */
     DocumentDTO selectOne(@Param("projectId") String projectId,
                           @Param("fileName") String fileName);
 
-    @Select("select project_id from project_document where document_id = #{documentId}")
-    Integer selectProjectId(Integer documentId);
-
+    /**
+     * 更新文档
+     * @param documents
+     */
     void update(@Param("document") Documents documents);
 
+    /**
+     * 查询项目文档
+     * @param projectId
+     * @return
+     */
     List<DocumentDTO> selectByProjectId(String projectId);
 }

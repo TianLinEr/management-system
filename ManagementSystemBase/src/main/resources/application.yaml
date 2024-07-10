@@ -12,5 +12,13 @@ mybatis-plus:
 #日志文件配置路径
 logging:
   level:
-    com:
-      api: debug
+    com: debug
+
+ms:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    adminSecretKey: psl
+    # 设置jwt过期时间
+    adminTtl: 7200000
+    # 设置前端传递过来的令牌名称
+    adminTokenName: token

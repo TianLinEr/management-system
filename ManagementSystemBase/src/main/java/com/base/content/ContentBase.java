@@ -74,6 +74,13 @@ public class ContentBase {
     public static final Integer DocumentType=2;
 
     /**
+     * 任务类型
+     */
+    public static final Integer TaskNew=0;
+    public static final Integer TaskDo=1;
+    public static final Integer TaskDone=2;
+
+    /**
      * 评论是否被删除
      */
     public static final Integer CommentIsDel=1;

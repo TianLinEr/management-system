@@ -1,6 +1,7 @@
 package com.document.controller;
 
 import com.base.content.ContentBase;
+import com.base.context.BaseContext;
 import com.base.dto.DocumentDTO;
 import com.base.entity.Documents;
 import com.base.utils.Result;
@@ -79,8 +80,7 @@ public class DocumentController {
     public Result upload(@RequestParam("file") MultipartFile file,
                          @RequestParam("project_id" ) String projectId) {
         try {
-            String userId = "1";
-            // todo 获取用户id
+            String userId = BaseContext.getCurrentId().toString();
 
             String dir=documentsService.getDir(projectId);
 //            String dir = "project-"+ projectId;
@@ -109,8 +109,7 @@ public class DocumentController {
     @DeleteMapping("/{projectId}/{fileName}")
     @Operation(summary = "删除")
     public Result delete(@PathVariable String projectId,@PathVariable String fileName) {
-        String userId = "1";
-        // todo 获取用户id
+        String userId = BaseContext.getCurrentId().toString();
 
         String dir=documentsService.getDir(projectId);
         minioUtils.removeFile(dir, fileName);
@@ -141,8 +140,7 @@ public class DocumentController {
     @PostMapping("/revoke/{projectId}/{fileName}")
     @Operation(summary = "撤销删除文档")
     public Result revoke(@PathVariable String projectId,@PathVariable String fileName){
-        String userId = "1";
-        // todo 获取用户id
+        String userId = BaseContext.getCurrentId().toString();
 
         documentsService.revoke(userId,projectId,fileName);
         log.info("文档管理-撤销删除文档-成功");
@@ -156,8 +154,7 @@ public class DocumentController {
     @PutMapping("/update")
     @Operation(summary = "更新文档")
     public Result update(@RequestBody Documents documents){
-        String userId = "1";
-        // todo 获取用户id
+        String userId = BaseContext.getCurrentId().toString();
 
         documentsService.update(userId,documents);
         log.info("文档管理-更新文档-成功");

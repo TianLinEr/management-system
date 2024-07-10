@@ -112,9 +112,8 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
             if(result1.getCode()!=ContentBase.SuccessCode
                 && result2.getCode()!=ContentBase.SuccessCode)
                 throw new AddTeamException(ContentBase.ErrorCode);
-        }else
-            team="gd-"+team;
-        projects.setTeamId(team);
+            projects.setTeamId(team);
+        }
         projects.setProjectState(String.valueOf(ContentBase.ProjectNotIsDel));
         projects.setProjectCreate(Timestamp.valueOf(time));
         projectsMapper.insert(projects);
@@ -122,8 +121,8 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
 
     @Override
     @Transactional
-    public ProjectDTO getByProjectId(String id) {
-        Projects projects = this.getById(id);
+    public ProjectDTO getByProjectId(String projectId) {
+        Projects projects = this.getById(projectId);
         ProjectDTO projectDTO = new ProjectDTO(
                 projects.getProjectId(),
                 projects.getProjectName(),

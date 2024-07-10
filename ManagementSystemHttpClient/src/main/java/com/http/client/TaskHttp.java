@@ -15,6 +15,6 @@ public interface TaskHttp {
      * @param id
      * @return
      */
-    @GetExchange("/{id}")
+    @GetExchange("/sel/{id}")
     Result<Tasks> getById(@PathVariable String id);
 }

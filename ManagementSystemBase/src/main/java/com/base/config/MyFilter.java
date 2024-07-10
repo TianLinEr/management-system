@@ -33,7 +33,7 @@ public class MyFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
-        String header1 = httpRequest.getHeader("origin");
+        String header1 = httpRequest.getHeader("wg");
         String header2 = httpRequest.getHeader("Truth");
 
         //如果是文件类型上传，则需要用这个request

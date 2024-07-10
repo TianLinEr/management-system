@@ -1,7 +1,12 @@
 package com.base.mapper;
 
+import com.base.dto.TaskDTO;
 import com.base.entity.Tasks;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,17 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface TasksMapper extends BaseMapper<Tasks> {
 
+
+    List<TaskDTO> selectAll();
+
+    List<TaskDTO> selectMy(@Param("userId") String userId);
+
+    List<TaskDTO> selectTeam(@Param("teamId") String teamId);
+
+    List<TaskDTO> selectProject(@Param("projectId") String projectId);
+
+    @Update("update tasks set task_state = #{taskState} where task_id = #{taskId}")
+    void delete(String taskId,String taskState);
+
+    void update(Tasks tasks);
 }

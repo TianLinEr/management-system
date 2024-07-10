@@ -64,5 +64,10 @@ public interface ProjectsService extends IService<Projects> {
      */
     void addProject(String id,Projects projects);
 
-    ProjectDTO getByProjectId(String id);
+    /**
+     * 获取项目根据项目Id
+     * @param projectId
+     * @return
+     */
+    ProjectDTO getByProjectId(String projectId);
 }

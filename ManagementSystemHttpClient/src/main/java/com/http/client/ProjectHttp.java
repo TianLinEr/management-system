@@ -36,7 +36,7 @@ public interface ProjectHttp {
      * 根据Id获取项目
      * @return
      */
-    @GetExchange("/{id}")
+    @GetExchange("/all/{id}")
     Result<ProjectDTO> getById(@PathVariable String id);
 
     /**

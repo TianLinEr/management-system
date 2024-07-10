@@ -8,6 +8,7 @@ import com.base.excepttion.AddDocumentException;
 import com.base.excepttion.NoAuthorityUpdateDocumentException;
 import com.base.excepttion.SqlSelectException;
 import com.base.mapper.DocumentsMapper;
+import com.base.mapper.ProjectDocumentMapper;
 import com.base.utils.Result;
 import com.http.client.ProjectHttp;
 import com.http.client.TeamHttp;
@@ -37,6 +38,9 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
 
     @Autowired
     private DocumentsMapper documentsMapper;
+
+    @Autowired
+    private ProjectDocumentMapper projectDocumentMapper;
 
     @Autowired
     private ProjectHttp projectHttp;
@@ -136,7 +140,7 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
         Integer userAuthority = userHttp.getUserAuthority(userId);
         if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)) {
             if (!userId.equals(documents.getUserId())) {
-                Integer integer = documentsMapper.selectProjectId(documents.getDocumentId());
+                Integer integer = projectDocumentMapper.selectProjectId(documents.getDocumentId());
                 Result<ProjectDTO> result = projectHttp.getById(String.valueOf(integer));
                 List<ProjectDTO> res = result.getRes();
                 if (res.isEmpty())

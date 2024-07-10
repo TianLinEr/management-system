@@ -95,7 +95,10 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         commentDTO.setCommentId(one.getCommentId());
         commentDTO.setCommentContent(one.getCommentContent());
         commentDTO.setCreateDate(one.getCreateDate());
-        commentDTO.setUserId(one.getUserId());
+        commentDTO.setUser(userHttp
+                .getUserInfo(String.valueOf(one.getUserId()))
+                .getRes()
+                .get(0));
         commentDTO.setCommentState(one.getCommentState());
 
         return commentDTO;

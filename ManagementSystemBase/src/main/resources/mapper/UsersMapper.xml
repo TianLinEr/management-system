@@ -2,4 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.mapper.UsersMapper">
 
+    <update id="update">
+        update users
+        <set>
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="userEmail != null">
+                user_email = #{userEmail},
+            </if>
+            <if test="userPhone != null">
+                user_phone = #{userPhone},
+            </if>
+            <if test="userSex != null">
+                user_sex = #{userSex},
+            </if>
+            <if test="userBirch != null">
+                user_birth= #{userBirch},
+            </if>
+        </set>
+            where user_id = #{userId}
+    </update>
 </mapper>
