@@ -46,9 +46,9 @@ public interface CommentsService extends IService<Comments> {
     /**
      * 逻辑删除评论
      * @param userId
-     * @param commentId
+     * @param commentIds
      */
-    void deleteComment(String userId,String commentId);
+    void deleteComment(String userId,List<Integer> commentIds);
 
     /**
      * 修改评论

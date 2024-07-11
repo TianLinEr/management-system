@@ -4,6 +4,8 @@ import com.base.entity.ProjectDocument;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -20,4 +22,6 @@ public interface ProjectDocumentMapper extends BaseMapper<ProjectDocument> {
      * @return
      */
     @Select("select project_id from project_document where document_id = #{documentId}")
-    Integer selectProjectId(Integer documentId);}
+    Integer selectProjectId(Integer documentId);
+
+}

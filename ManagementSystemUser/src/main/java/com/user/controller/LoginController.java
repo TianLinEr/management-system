@@ -1,5 +1,6 @@
 package com.user.controller;
 
+import com.base.annotation.NotNeedIntercept;
 import com.base.config.JwtProperties;
 import com.base.config.JwtUtil;
 import com.base.content.ContentBase;
@@ -25,6 +26,7 @@ import java.util.*;
 @RestController
 @Slf4j
 @Tag(name = "登录管理")
+@NotNeedIntercept
 public class LoginController {
 
     @Autowired
@@ -35,6 +37,7 @@ public class LoginController {
 
     @PostMapping("/login_in")
     @Operation(summary = "用户登入")
+    @NotNeedIntercept
     public Result<UserDTO> login_in(@RequestBody Users users) {
 
         UserDTO user = userService.selectByEmail(users.getUserEmail(), users.getPassword());
@@ -60,6 +63,7 @@ public class LoginController {
     @PostMapping("/login_up")
     @Operation(summary = "用户注册")
     @Transactional
+    @NotNeedIntercept
     public Result<UserDTO> login_up(@RequestBody LoginVO loginVO) {
         Map<LocalDateTime, String> time = BaseContext.getTime(BaseContext.getCurrentId());
         Map<LocalDateTime, String> map=new HashMap<>();

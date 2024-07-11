@@ -26,22 +26,19 @@ public interface ProjectsMapper extends BaseMapper<Projects> {
 
     /**
      * 获取所有公开项目
-     * @param type
      * @param state
      * @return
      */
-    List<ProjectDTO> getAllPublic(@Param("project_type") String type,
+    List<ProjectDTO> getAllPublic(
                 @Param("project_state") String state);
 
     /**
      * 获取我的项目
      * @param id
-     * @param type
      * @param state
      * @return
      */
     List<ProjectDTO> getMyProject(@Param("user_id") Integer id,
-                                    @Param("project_type") String type,
                                     @Param("project_state") String state);
 
     /**

@@ -61,4 +61,7 @@ public interface DocumentsMapper extends BaseMapper<Documents> {
      * @return
      */
     List<DocumentDTO> selectByProjectId(String projectId);
+
+
+    void deleteById(List<Integer> documentIds, String state);
 }

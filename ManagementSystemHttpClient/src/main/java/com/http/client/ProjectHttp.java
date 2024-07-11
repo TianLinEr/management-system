@@ -1,5 +1,6 @@
 package com.http.client;
 
+import com.base.annotation.NotNeedIntercept;
 import com.base.dto.ProjectDTO;
 import com.base.entity.Projects;
 import com.base.utils.Result;
@@ -8,6 +9,7 @@ import org.springframework.web.service.annotation.*;
 
 
 @HttpExchange("http://127.0.0.1:10010/project")
+@NotNeedIntercept
 public interface ProjectHttp {
 
     /**
@@ -70,4 +72,5 @@ public interface ProjectHttp {
      */
     @PostExchange("/add")
     Result addProject(@RequestBody Projects projects);
+
 }

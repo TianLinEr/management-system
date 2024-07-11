@@ -1,5 +1,6 @@
 package com.base.interceptor;
 
+import com.base.annotation.NotNeedIntercept;
 import com.base.config.JwtProperties;
 import com.base.config.JwtUtil;
 import com.base.content.ContentBase;
@@ -38,16 +39,17 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
      */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //判断当前拦截到的是Controller的方法还是其他资源
-        if (!(handler instanceof HandlerMethod)) {
+        if (!(handler instanceof HandlerMethod handlerMethod)) {
             //当前拦截到的不是动态方法，直接放行
             return true;
         }
         //判断当前方法是否需要拦截
-        String uri = request.getRequestURI();
-        String str1 = "/user/login_in";
-        String str2 = "/user/login_up";
-        if(uri.equals(str1) || uri.equals(str2))
-            return true;
+
+        // 检查类和方法是否被@NotNeedIntercept注解标记
+        if (handlerMethod.getBeanType().isAnnotationPresent(NotNeedIntercept.class) ||
+                handlerMethod.getMethod().isAnnotationPresent(NotNeedIntercept.class)) {
+            return true; // 不拦截
+        }
 
         //1、从请求头中获取令牌
         String token = request.getHeader(jwtProperties.getAdminTokenName());

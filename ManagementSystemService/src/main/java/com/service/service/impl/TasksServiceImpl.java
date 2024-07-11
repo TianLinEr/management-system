@@ -14,6 +14,7 @@ import com.service.service.TasksService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +23,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author psl
@@ -47,10 +49,10 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
     @Transactional
     public List<TaskDTO> getAll(String userId) {
         List<TaskDTO> task;
-        if(Objects.equals(userId, String.valueOf(ContentBase.AuthorityToAdmin)))
+        if (Objects.equals(userId, String.valueOf(ContentBase.AuthorityToAdmin)))
             task = tasksMapper.selectAll();
         else
-            task=tasksMapper.selectMy(userId);
+            task = tasksMapper.selectMy(userId);
         return task;
     }
 
@@ -67,57 +69,77 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
 
     @Override
     @Transactional
-    public void delById(String userId,String taskId) {
+    public void delById(String userId, List<Integer> taskIds) {
         Integer userAuthority = userHttp.getUserAuthority(userId);
-        Tasks tasks = tasksMapper.selectById(taskId);
-        if(Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)){
-            if(tasks.getPublishUserId() == Integer.parseInt(userId))
-                tasksMapper.delete(taskId, String.valueOf(ContentBase.TaskIsDel));
-            else
+        List<Tasks> tasks = tasksMapper.selectList(
+                new LambdaQueryWrapper<Tasks>().in(Tasks::getTaskId, taskIds));
+        tasks.forEach(item -> {
+            if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)
+                    || item.getPublishUserId() != Integer.parseInt(userId))
                 throw new UserTypeException(ContentBase.ErrorCode);
-        }else
-            throw new UserTypeException(ContentBase.ErrorCode);
+        });
+        tasksMapper.delete(taskIds, String.valueOf(ContentBase.TaskIsDel));
+
     }
 
     @Override
     @Transactional
     public void insert(TaskVO tasks) {
-        Tasks task = new Tasks(null,tasks.getTaskName(),tasks.getTaskContent()
+        Tasks task = new Tasks(null, tasks.getTaskName(), tasks.getTaskContent()
                 , Timestamp.valueOf(LocalDateTime.now())
                 , Timestamp.valueOf(LocalDateTime.now().plusDays(tasks.getDays()))
-                ,null, tasks.getPublishUserId(), tasks.getWorkUserId()
-                ,String.valueOf(ContentBase.TaskNotIsDel),null);
+                , null, tasks.getPublishUserId(), tasks.getWorkUserId()
+                , String.valueOf(ContentBase.TaskNotIsDel), null);
         tasksMapper.insert(task);
         projectTaskMapper.insert(new ProjectTask(
-                null,tasks.getProjectId(),task.getTaskId()
-                ,ContentBase.TaskNew,String.valueOf(ContentBase.TaskIsPublic)));
+                null, tasks.getProjectId(), task.getTaskId()
+                , ContentBase.TaskNew, String.valueOf(ContentBase.TaskIsPublic)));
     }
 
     @Override
     @Transactional
-    public void revokeById(String userId,String taskId) {
+    public void revokeById(String userId, String taskId) {
         Integer userAuthority = userHttp.getUserAuthority(userId);
         Tasks tasks = tasksMapper.selectById(taskId);
-        if(Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)){
-            if(tasks.getPublishUserId() == Integer.parseInt(userId))
-                tasksMapper.delete(taskId, String.valueOf(ContentBase.TaskNotIsDel));
-            else
-                throw new UserTypeException(ContentBase.ErrorCode);
-        }else
+        if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)
+                || tasks.getPublishUserId() == Integer.parseInt(userId))
             throw new UserTypeException(ContentBase.ErrorCode);
+
+        List<Integer> taskIds = new ArrayList<>();
+        taskIds.add(Integer.parseInt(taskId));
+        tasksMapper.delete(taskIds, String.valueOf(ContentBase.TaskNotIsDel));
     }
 
     @Override
-    public void update(String userId,Tasks tasks) {
+    public void update(String userId, Tasks tasks) {
         Integer userAuthority = userHttp.getUserAuthority(userId);
-        if(Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)){
-            if(tasks.getPublishUserId() == Integer.parseInt(userId))
+        if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)) {
+            if (tasks.getPublishUserId() == Integer.parseInt(userId))
                 tasksMapper.update(tasks);
             else
                 throw new UserTypeException(ContentBase.ErrorCode);
-        }else
+        } else
             throw new UserTypeException(ContentBase.ErrorCode);
 
+    }
 
+    @Override
+    @Transactional
+    public void delProjectIds(List<Integer> list) {
+        List<Integer> taskIds = projectTaskMapper.selectList(
+                new LambdaQueryWrapper<ProjectTask>().in(ProjectTask::getProjectId, list)
+        ).stream().map(ProjectTask::getTaskId).collect(Collectors.toList());
+        tasksMapper.delete(taskIds, String.valueOf(ContentBase.TaskIsDel));
+    }
+
+    @Transactional
+    @Scheduled(cron = "* 50 23 * * ?")
+    public void delTask(){
+        List<Integer> taskIds = tasksMapper.selectList(
+                        new LambdaQueryWrapper<Tasks>().eq(Tasks::getTaskState
+                                , String.valueOf(ContentBase.TaskIsDel)))
+                .stream().map(Tasks::getTaskId).collect(Collectors.toList());
+
+        tasksMapper.deleteBatchIds(taskIds);
     }
 }

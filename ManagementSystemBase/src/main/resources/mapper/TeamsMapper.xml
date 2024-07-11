@@ -3,4 +3,10 @@
 <mapper namespace="com.base.mapper.TeamsMapper">
 
 
+    <update id="delById">
+        update teams set team_state=#{state} where team_id in
+        <foreach collection="teamIds" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

@@ -32,6 +32,13 @@
         where task_id = #{taskId}
     </update>
 
+    <update id="delete">
+        update tasks set task_state=#{state} where task_id in
+        <foreach collection="taskIds" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
     <select id="selectAll" resultType="com.base.dto.TaskDTO">
         select pt.task_id as task_id,
                task_name,

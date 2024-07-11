@@ -38,14 +38,5 @@ public interface CommentsMapper extends BaseMapper<Comments> {
      * @param commentId
      * @param state
      */
-    @Update("update comments set comment_state = #{state} where comment_id = #{commentId}")
-    void deleteComment(String commentId,String state);
-
-    /**
-     * 恢复评论
-     * @param commentId
-     * @param state
-     */
-    @Update("update comments set comment_state = #{state} where comment_id = #{commentId}")
-    void revokeComment(Integer commentId, String state);
+    void deleteComment(List<Integer> commentId,String state);
 }

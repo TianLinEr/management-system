@@ -15,6 +15,7 @@ import com.http.client.UserHttp;
 import com.service.service.TeamsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -99,26 +101,31 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
 
     @Override
     @Transactional
-    public void delById(String userId, String teamId) {
+    public void delById(String userId, List<Integer> teamIds) {
         Integer userAuthority = userHttp.getUserAuthority(userId);
-        Integer teamAuthority = teamUserMapper.selectAuthority(userId, teamId);
-        if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)
-                || Objects.equals(teamAuthority, ContentBase.AuthorityToDel)) {
-            teamsMapper.delById(teamId,String.valueOf(ContentBase.TeamIsDel));
-        }else
+        if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin))
             throw new NoAuthorityUpdateTeamException(ContentBase.ErrorCode);
+
+        teamsMapper.delById(teamIds,String.valueOf(ContentBase.TeamIsDel));
+    }
+
+    @Override
+    @Transactional
+    public void delById(List<Integer> teamIds) {
+
+        teamsMapper.delById(teamIds,String.valueOf(ContentBase.TeamIsDel));
     }
 
     @Override
     @Transactional
     public void revokeById(String userId, String teamId) {
         Integer userAuthority = userHttp.getUserAuthority(userId);
-        Integer teamAuthority = teamUserMapper.selectAuthority(userId, teamId);
-        if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)
-                || Objects.equals(teamAuthority, ContentBase.AuthorityToDel)) {
-            teamsMapper.delById(teamId,String.valueOf(ContentBase.TeamNotIsDel));
-        }else
+        if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin))
             throw new NoAuthorityUpdateTeamException(ContentBase.ErrorCode);
+
+        List<Integer> list=new ArrayList<>();
+        list.add(Integer.valueOf(userId));
+        teamsMapper.delById(list,String.valueOf(ContentBase.TeamNotIsDel));
     }
 
     @Override
@@ -151,5 +158,16 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
             return new ArrayList<>();
         return teamsMapper.selectList(
                 new LambdaQueryWrapper<Teams>().in(Teams::getTeamId, list));
+    }
+
+    @Transactional
+    @Scheduled(cron = "* 20 0 * * ?")
+    public void delTeam(){
+        List<String> teamIds = teamsMapper.selectList(
+                new LambdaQueryWrapper<Teams>().eq(Teams::getTeamState
+                        , String.valueOf(ContentBase.TeamIsDel))
+        ).stream().map(Teams::getTeamId).collect(Collectors.toList());
+
+        teamsMapper.deleteBatchIds(teamIds);
     }
 }

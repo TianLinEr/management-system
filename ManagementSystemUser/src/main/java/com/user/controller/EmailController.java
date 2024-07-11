@@ -1,5 +1,6 @@
 package com.user.controller;
 
+import com.base.annotation.NotNeedIntercept;
 import com.base.context.BaseContext;
 import com.base.entity.Users;
 import com.base.utils.RandomStringGenerator;
@@ -53,7 +54,7 @@ public class EmailController {
 
     @PostMapping("/loginEmail")
     @Operation(summary = "注册验证码")
-
+    @NotNeedIntercept
     public String loginEmail(@RequestParam("email") String email){
         // new一个 简单邮件对象
         SimpleMailMessage mail = new SimpleMailMessage();

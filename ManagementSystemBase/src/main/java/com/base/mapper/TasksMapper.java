@@ -27,8 +27,7 @@ public interface TasksMapper extends BaseMapper<Tasks> {
 
     List<TaskDTO> selectProject(@Param("projectId") String projectId);
 
-    @Update("update tasks set task_state = #{taskState} where task_id = #{taskId}")
-    void delete(String taskId,String taskState);
+    void delete(List<Integer> taskIds,String taskState);
 
     void update(Tasks tasks);
 }

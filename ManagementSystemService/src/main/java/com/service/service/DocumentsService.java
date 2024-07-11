@@ -39,6 +39,8 @@ public interface DocumentsService extends IService<Documents> {
      */
     void delete(String userId,String projectId,String fileName);
 
+    void delete(String userId,List<Integer> documentIds);
+
     /**
      * 撤销删除文档
      * @param userId

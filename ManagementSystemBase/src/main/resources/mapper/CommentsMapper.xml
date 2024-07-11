@@ -3,4 +3,12 @@
 <mapper namespace="com.base.mapper.CommentsMapper">
 
 
+    <update id="deleteComment">
+        update comments
+        set comment_state=#{state}
+        where comment_id in
+        <foreach collection="commentIds" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

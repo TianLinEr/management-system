@@ -47,9 +47,11 @@ public interface TeamsService extends IService<Teams> {
 
     /**
      * 删除团队
-     * @param teamId
+     * @param teamIds
      */
-    void delById(String userId,String teamId);
+    void delById(String userId,List<Integer> teamIds);
+
+    void delById(List<Integer> teamIds);
 
     /**
      * 恢复团队

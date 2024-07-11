@@ -1,5 +1,6 @@
 package com.service.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.content.ContentBase;
 import com.base.dto.DocumentDTO;
 import com.base.dto.ProjectDTO;
@@ -16,6 +17,7 @@ import com.http.client.UserHttp;
 import com.service.service.DocumentsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -109,6 +112,13 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
 
     @Override
     @Transactional
+    public void delete(String userId, List<Integer> documentIds) {
+        documentsMapper.deleteById(documentIds, String.valueOf(ContentBase.DocumentIsDel));
+
+    }
+
+    @Override
+    @Transactional
     public void revoke(String userId, String projectId, String fileName) {
 
         DocumentDTO documentDTO = documentsMapper.selectOne(projectId, fileName);
@@ -158,4 +168,12 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
             documentsMapper.update(documents);
     }
 
+    @Scheduled(cron = "* 40 23 * * ?")
+    @Transactional
+    public void deleteFile() {
+        List<Documents> documents = documentsMapper.selectList(
+                new LambdaQueryWrapper<Documents>().eq(Documents::getDocumentState, String.valueOf(ContentBase.DocumentIsDel))
+        );
+        documentsMapper.deleteBatchIds(documents.stream().map(Documents::getDocumentId).collect(Collectors.toList()));
+    }
 }

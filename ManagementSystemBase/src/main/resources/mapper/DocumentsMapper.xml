@@ -31,6 +31,14 @@
         where document_id = #{document.documentId}
     </update>
 
+    <update id="deleteById">
+        update documents set document_state = #{state}
+        where document_id in
+        <foreach collection="documentIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
     <select id="selectOne" resultType="com.base.dto.DocumentDTO">
         select  documents.document_id as document_id,document_name, document_url,
                 user_id, create_date, document_state, project_id, document_type

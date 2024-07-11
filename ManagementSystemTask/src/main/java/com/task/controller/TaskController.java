@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.service.annotation.DeleteExchange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +60,20 @@ public class TaskController {
         return new Result<TaskDTO>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
-    @DeleteMapping("/del/{taskId}")
+    @DeleteMapping("/del/{taskIds}")
     @Operation(summary = "根据id删除任务")
-    public Result<Tasks> delById(@PathVariable String taskId){
+    public Result<Tasks> delById(@PathVariable List<Integer> taskIds){
         Integer userId = BaseContext.getCurrentId();
-        taskService.delById(String.valueOf(userId),taskId);
+        taskService.delById(String.valueOf(userId),taskIds);
         log.info("任务管理-根据id删除任务-删除成功");
+        return new Result<Tasks>().success(ContentBase.SuccessCode,"删除成功",null);
+    }
+
+    @DeleteMapping("/del-project/{projectIds}")
+    @Operation(summary = "根据项目id删除任务")
+    public Result deleteProjectIds(List<Integer> list){
+        taskService.delProjectIds(list);
+        log.info("任务管理-根据项目id删除任务-删除成功");
         return new Result<Tasks>().success(ContentBase.SuccessCode,"删除成功",null);
     }
 

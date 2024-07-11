@@ -53,9 +53,9 @@ public interface UsersService extends IService<Users> {
     /**
      * 删除用户
      * @param userId
-     * @param delUserId
+     * @param delUserIds
      */
-    void deleteById(String userId,String delUserId);
+    void deleteById(String userId,List<Integer> delUserIds);
 
     /**
      * 登录验证

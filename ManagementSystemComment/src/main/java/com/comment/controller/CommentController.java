@@ -61,11 +61,12 @@ public class CommentController {
         return new Result<>(ContentBase.SuccessCode,"添加成功", null);
     }
 
-    @DeleteMapping("/delete/{commentId}")
+    @DeleteMapping("/delete/{commentIds}")
     @Operation(summary = "删除评论")
-    public Result deleteComment(@PathVariable String commentId) {
+    public Result deleteComment(@PathVariable List<Integer> commentIds) {
         String userId = BaseContext.getCurrentId().toString();
-        commentsService.deleteComment(userId,commentId);
+
+        commentsService.deleteComment(userId,commentIds);
         log.info("评论管理-删除评论-删除成功");
         return new Result<>(ContentBase.SuccessCode,"删除成功", null);
     }

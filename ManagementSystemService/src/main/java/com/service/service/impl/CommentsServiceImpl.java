@@ -18,12 +18,15 @@ import com.http.client.TaskHttp;
 import com.http.client.UserHttp;
 import com.service.service.CommentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -117,14 +120,17 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
 
     @Override
     @Transactional
-    public void deleteComment(String userId, String commentId) {
+    public void deleteComment(String userId, List<Integer> commentIds) {
         Integer userAuthority = userHttp.getUserAuthority(userId);
-        Comments comments = commentsMapper.selectById(commentId);
-        if (userAuthority != ContentBase.AuthorityToAdmin
-                && userId != String.valueOf(comments.getUserId()))
-            throw new NoAuthorityUpdateCommentException(ContentBase.ErrorCode);
+        List<Comments> comments = commentsMapper.selectList(
+                new LambdaQueryWrapper<Comments>().in(Comments::getCommentId, commentIds));
+        comments.forEach(item -> {
+            if (userAuthority != ContentBase.AuthorityToAdmin
+                    && userId != String.valueOf(item.getUserId()))
+                throw new NoAuthorityUpdateCommentException(ContentBase.ErrorCode);
+        });
 
-        commentsMapper.deleteComment(commentId, String.valueOf(ContentBase.CommentIsDel));
+        commentsMapper.deleteComment(commentIds, String.valueOf(ContentBase.CommentIsDel));
     }
 
     @Override
@@ -152,6 +158,16 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
                 && userId != String.valueOf(comments.getUserId()))
             throw new NoAuthorityUpdateCommentException(ContentBase.ErrorCode);
 
-        commentsMapper.revokeComment(comments.getCommentId(), String.valueOf(ContentBase.CommentNotIsDel));
+        List<Integer> list=new ArrayList<>();
+        list.add(comments.getCommentId());
+        commentsMapper.deleteComment(list, String.valueOf(ContentBase.CommentNotIsDel));
+    }
+
+    @Scheduled(cron = "* 0 0 * * ? ")
+    @Transactional
+    public void deleteComment() {
+        List<Comments> comments = commentsMapper.selectList(new LambdaQueryWrapper<Comments>()
+                .eq(Comments::getCommentState, String.valueOf(ContentBase.CommentIsDel)));
+        commentsMapper.deleteBatchIds(comments.stream().map(Comments::getCommentId).collect(Collectors.toList()));
     }
 }

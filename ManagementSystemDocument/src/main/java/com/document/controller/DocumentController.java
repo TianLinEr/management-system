@@ -4,6 +4,7 @@ import com.base.content.ContentBase;
 import com.base.context.BaseContext;
 import com.base.dto.DocumentDTO;
 import com.base.entity.Documents;
+import com.base.excepttion.AddDocumentException;
 import com.base.utils.Result;
 import com.document.config.MinIOConfig;
 import com.document.config.MinIOUtil;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.service.annotation.DeleteExchange;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class DocumentController {
      * @return
      */
     @Operation(summary = "根据Id获取文档")
-    @GetMapping("/{id}")
+    @GetMapping("/sel/{id}")
     Result<Documents> getById(@PathVariable String id){
         Documents documents = documentsService.getById(id);
         List<Documents> documentsList = new ArrayList<>();
@@ -89,6 +91,9 @@ public class DocumentController {
             String fileName = file.getOriginalFilename();
             //类型
             String contentType = file.getContentType();
+            if(minioUtils.isObjectExist(dir, fileName))
+                throw new AddDocumentException(ContentBase.ErrorCode);
+
             minioUtils.uploadFile(dir, file, fileName, contentType);
             log.info("文档管理-文件上传-成功");
             String url = minioUtils.getPresignedObjectUrl(dir, fileName);
@@ -97,7 +102,7 @@ public class DocumentController {
         } catch (Exception e) {
             e.printStackTrace();
             log.error("文档管理-文件上传-失败");
-            return new Result<>().error(ContentBase.ErrorCode, "上传失败");
+            return new Result<>().error(ContentBase.ErrorCode, "上传失败,可能原因是该文件已存在，网络不稳定等");
         }
     }
 
@@ -106,7 +111,7 @@ public class DocumentController {
      *
      * @param fileName
      */
-    @DeleteMapping("/{projectId}/{fileName}")
+    @DeleteMapping("/del/{projectId}/{fileName}")
     @Operation(summary = "删除")
     public Result delete(@PathVariable String projectId,@PathVariable String fileName) {
         String userId = BaseContext.getCurrentId().toString();
@@ -115,6 +120,29 @@ public class DocumentController {
         minioUtils.removeFile(dir, fileName);
         log.info("文档管理-删除-成功");
         documentsService.delete(userId,projectId,fileName);
+        return new Result<>().success(ContentBase.SuccessCode, "删除成功", null);
+    }
+
+    /**
+     * 删除
+     *
+     * @param documentIds
+     */
+    @DeleteMapping("/del/{documentIds}")
+    @Operation(summary = "删除")
+    public Result deleteById(@PathVariable List<Integer> documentIds) {
+        String userId = BaseContext.getCurrentId().toString();
+        log.info("文档管理-删除-成功");
+        documentsService.delete(userId,documentIds);
+        return new Result<>().success(ContentBase.SuccessCode, "删除成功", null);
+    }
+
+    @DeleteMapping("/del-project/{projectIds}")
+    public Result deleteProjectIds(@PathVariable List<Integer> projectIds){
+        projectIds.forEach(id->{
+            String dir=documentsService.getDir(String.valueOf(id));
+            minioUtils.removeBucket(dir);
+        });
         return new Result<>().success(ContentBase.SuccessCode, "删除成功", null);
     }
 

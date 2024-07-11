@@ -4,6 +4,8 @@ import com.base.entity.Teams;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -14,8 +16,8 @@ import org.apache.ibatis.annotations.Update;
  */
 public interface TeamsMapper extends BaseMapper<Teams> {
 
-    @Update("update teams set team_state = #{state} where team_id=#{teamId}")
-    void delById(String teamId,String state);
+
+    void delById(List<Integer> teamIds, String state);
 
     @Update("update teams set team_name = #{teamName} where team_id=#{teamId}")
     void update(Teams team);

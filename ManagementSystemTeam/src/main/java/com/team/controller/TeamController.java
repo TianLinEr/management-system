@@ -15,6 +15,7 @@ import org.springframework.web.service.annotation.GetExchange;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @Tag(name = "团队管理")
@@ -57,7 +58,7 @@ public class TeamController {
         return teamService.getUserAuthority(userId,teamId);
     }
 
-    @GetMapping("/{teamId}")
+    @GetMapping("/sel/{teamId}")
     @Operation(summary = "根据Id获取团队")
     public Result<Teams> getTeam(@PathVariable String teamId){
         ArrayList<Teams> teams = new ArrayList<>();
@@ -66,13 +67,22 @@ public class TeamController {
         return new Result<Teams>().success(ContentBase.SuccessCode,"获取成功", teams);
     }
 
-    @DeleteMapping("/{teamId}")
+    @DeleteMapping("/del/{teamIds}")
     @Operation(summary = "删除团队")
-    public Result delTeam(@PathVariable String teamId){
+    public Result delTeam(@PathVariable List<Integer> teamIds){
         String userId = BaseContext.getCurrentId().toString();
 
         log.info("团队管理-删除团队-删除成功");
-        teamService.delById(userId,teamId);
+        teamService.delById(userId,teamIds);
+        return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
+    }
+
+    @DeleteMapping("/del-user/{teamIds}")
+    @Operation(summary = "删除团队")
+    public Result delTeamTask(@PathVariable List<Integer> teamIds){
+
+        log.info("团队管理-删除团队-删除成功");
+        teamService.delById(teamIds);
         return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
     }
 

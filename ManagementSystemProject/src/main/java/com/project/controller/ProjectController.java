@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.service.annotation.DeleteExchange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,7 @@ public class ProjectController {
         return new Result<>().success(ContentBase.SuccessCode,"修改成功",null);
     }
 
+    // todo 删除多个项目
     @DeleteMapping("/del")
     @Operation(summary = "删除项目")
     public Result DelByProjectId(@RequestBody Projects projects){

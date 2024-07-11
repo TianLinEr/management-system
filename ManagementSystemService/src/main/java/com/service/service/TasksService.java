@@ -23,11 +23,13 @@ public interface TasksService extends IService<Tasks> {
 
     List<TaskDTO> getAllProject(String projectId);
 
-    void delById(String userId,String taskId);
+    void delById(String userId,List<Integer> taskIds);
 
     void insert(TaskVO tasks);
 
     void revokeById(String userId,String taskId);
 
     void update(String userId,Tasks tasks);
+
+    void delProjectIds(List<Integer> list);
 }

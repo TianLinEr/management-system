@@ -3,18 +3,22 @@ package com.service.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.content.ContentBase;
 import com.base.dto.UserDTO;
+import com.base.entity.TeamUser;
 import com.base.entity.Users;
 import com.base.excepttion.AddUserException;
 import com.base.excepttion.NoAuthorityUpdateUserException;
 import com.base.excepttion.SqlSelectException;
 import com.base.excepttion.UserTypeException;
+import com.base.mapper.TeamUserMapper;
 import com.base.mapper.UsersMapper;
 import com.http.client.TaskHttp;
+import com.http.client.TeamHttp;
 import com.http.client.UserHttp;
 import com.service.service.UsersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,6 +42,12 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private TeamUserMapper teamUserMapper;
+
+    @Autowired
+    private TeamHttp teamHttp;
 
     @Autowired
     private TaskHttp taskHttp;
@@ -86,6 +97,15 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 
     @Override
     public void insert(Users user,String userId) {
+        List<Users> list = usersMapper.selectList(new LambdaQueryWrapper<Users>()
+                .eq(Users::getUserEmail, user.getUserEmail()));
+        if(list.size() != 0)
+            throw new AddUserException(ContentBase.ErrorCode);
+
+        user.setPassword("123");
+        user.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
+        user.setUserType(String.valueOf(ContentBase.AuthorityToUser));
+
         Integer userType = usersMapper.getUserType(userId);
         if(!Objects.equals(userType, ContentBase.AuthorityToAdmin)){
             if(user.getUserType() == String.valueOf(ContentBase.AuthorityToAdmin))
@@ -97,12 +117,17 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     }
 
     @Override
-    public void deleteById(String userId,String delUserId) {
+    @Transactional
+    public void deleteById(String userId,List<Integer> delUserIds) {
         Integer userType = usersMapper.getUserType(userId);
-        if(!Objects.equals(userType, ContentBase.AuthorityToAdmin))
-            if(!Objects.equals(delUserId,userId))
+        delUserIds.forEach(delUserId -> {
+            if(!Objects.equals(userType, ContentBase.AuthorityToAdmin)
+                    && !Objects.equals(delUserId,userId))
                 throw new NoAuthorityUpdateUserException(ContentBase.ErrorCode);
-        usersMapper.deleteById(delUserId);
+        });
+        usersMapper.deleteBatchIds(delUserIds);
+        teamUserMapper.delete(
+                new LambdaQueryWrapper<TeamUser>().in(TeamUser::getUserId, delUserIds));
     }
 
     @Override
@@ -129,5 +154,19 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         users.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
 //        System.out.println(users.toString());
         usersMapper.insert(users);
+    }
+
+    @Transactional
+    @Scheduled(cron = "* 10 0 * * ?")
+    public void delUser(){
+        List<Integer> userIds = usersMapper.selectList(new LambdaQueryWrapper<Users>())
+                .stream().map(Users::getUserId).collect(Collectors.toList());
+
+        List<Integer> teamIds = teamUserMapper.selectList(
+                        new LambdaQueryWrapper<TeamUser>().notIn(TeamUser::getUserId, userIds))
+                .stream().map(TeamUser::getUserId).collect(Collectors.toList());
+
+        teamHttp.delTeamTask(teamIds);
+        teamUserMapper.delete(new LambdaQueryWrapper<TeamUser>().in(TeamUser::getTeamId, teamIds));
     }
 }

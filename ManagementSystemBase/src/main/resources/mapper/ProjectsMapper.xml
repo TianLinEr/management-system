@@ -29,7 +29,7 @@
              ,p2.project_name,p2.project_state,t.*
             from (
                 select * from projects p
-                    where p.project_type=#{project_type} and p.project_state=#{project_state}
+                    where p.project_state=#{project_state}
                 ) as p2
             inner join teams t on p2.team_id=t.team_id
     </select>
@@ -40,8 +40,7 @@
              ,p2.project_name,p2.project_state,t.*
         from (
             select * from projects p
-                where p.project_type=#{project_type}
-                and p.project_state=#{project_state}
+                where p.project_state=#{project_state}
                 and p.team_id in (
                     select team_id from team_user where user_id=#{user_id}
                 )

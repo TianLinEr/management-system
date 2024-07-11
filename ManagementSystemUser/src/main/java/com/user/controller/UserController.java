@@ -4,6 +4,7 @@ import com.base.content.ContentBase;
 import com.base.context.BaseContext;
 import com.base.entity.Users;
 import com.base.utils.Result;
+import com.base.vo.UserVO;
 import com.service.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,30 +33,52 @@ public class UserController {
 
     @GetMapping("/all")
     @Operation(summary = "获取所有用户")
-    public Result<Users> getAllUser(){
+    public Result<UserVO> getAllUser(){
         String userId = BaseContext.getCurrentId().toString();
 
         List<Users> users = userService.selectAllUser(userId);
+        List<UserVO> userVOS = new ArrayList<>();
+        users.forEach(user -> {
+            UserVO userVO = new UserVO(
+                    user.getUserId(),user.getUserName(),user.getUserSex(),
+                    null,user.getUserPhone(),null,
+                    user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                    ,user.getUserEmail(),user.getUserType()
+            );
+            if(user.getUserBirch()!=null)
+                userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+            userVOS.add(userVO);
+        });
         log.info("用户管理-获取所有用户-获取成功");
-        return new Result<Users>().success(ContentBase.SuccessCode,"获取成功",users);
+        return new Result<UserVO>().success(ContentBase.SuccessCode,"获取成功",userVOS);
     }
 
     @GetMapping("/sel/{userId}")
     @Operation(summary = "获取用户信息")
-    public Result<Users> getUserInfo(@PathVariable String userId){
-        List<Users> users=new ArrayList<>();
+    public Result<UserVO> getUserInfo(@PathVariable String userId){
+        List<UserVO> users=new ArrayList<>();
         Users user=userService.selectById(userId);
-        users.add(user);
+        UserVO userVO = new UserVO(
+                user.getUserId(),user.getUserName(),user.getUserSex(),
+                null,user.getUserPhone(),null,
+                user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                ,user.getUserEmail(),user.getUserType()
+        );
+        if(user.getUserBirch()!=null)
+            userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+        users.add(userVO);
         log.info("用户管理-获取用户信息-获取成功");
-        return new Result<Users>().success(ContentBase.SuccessCode,"获取成功",users);
+        return new Result<UserVO>().success(ContentBase.SuccessCode,"获取成功",users);
     }
 
-    @DeleteMapping("/del/{delUserId}")
+    @DeleteMapping("/del/{delUserIds}")
     @Operation(summary = "删除用户")
-    public Result delUser(@PathVariable String delUserId){
+    public Result delUser(@PathVariable List<Integer> delUserIds){
         String userId = BaseContext.getCurrentId().toString();
 
-        userService.deleteById(userId,delUserId);
+        userService.deleteById(userId,delUserIds);
 
         log.info("用户管理-删除用户-删除成功");
         return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
