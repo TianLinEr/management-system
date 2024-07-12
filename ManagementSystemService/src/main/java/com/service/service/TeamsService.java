@@ -2,9 +2,9 @@ package com.service.service;
 
 import com.base.entity.Teams;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.base.vo.TeamsVO;
+import com.base.dto.TeamDTO;
+import com.base.vo.TeamVO;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public interface TeamsService extends IService<Teams> {
      * @param teamVO
      * @param userId
      */
-    void addTeamGD(TeamsVO teamVO,String userId);
+    void addTeamGD(TeamDTO teamVO, String userId);
 
     /**
      * 删除团队
@@ -72,19 +72,21 @@ public interface TeamsService extends IService<Teams> {
      * @param userId
      * @return
      */
-    List<Teams> getAll(String userId);
+    List<TeamVO> getAll(String userId);
 
     /**
      * 获取与我相关的团队列表
      * @param userId
      * @return
      */
-    List<Teams> getAllByUserId(String userId);
+    List<TeamVO> getAllByUserId(String userId);
+
+    List<Integer> test(String userId);
 
     /**
      * 获取团队根据Id
      * @param teamId
      * @return
      */
-//    Teams selById(String teamId);
+    TeamVO selById(String teamId);
 }

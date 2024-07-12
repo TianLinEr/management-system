@@ -2,9 +2,9 @@ package com.task.controller;
 
 import com.base.content.ContentBase;
 import com.base.context.BaseContext;
-import com.base.dto.TaskDTO;
 import com.base.entity.Tasks;
 import com.base.utils.Result;
+import com.base.dto.TaskDTO;
 import com.base.vo.TaskVO;
 import com.service.service.TasksService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.DeleteExchange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,27 +36,27 @@ public class TaskController {
 
     @GetMapping("/sel")
     @Operation(summary = "查询所有任务")
-    public Result<TaskDTO> getAll(){
+    public Result<TaskVO> getAll(){
         Integer userId = BaseContext.getCurrentId();
-        List<TaskDTO> all = taskService.getAll(String.valueOf(userId));
+        List<TaskVO> all = taskService.getAll(String.valueOf(userId));
         log.info("任务管理-查询所有任务-查询成功");
-        return new Result<TaskDTO>().success(ContentBase.SuccessCode,"查询成功",all);
+        return new Result<TaskVO>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
     @GetMapping("/sel/team/{teamId}")
     @Operation(summary = "查询关于团队的任务")
-    public Result<TaskDTO> getAllTeam(@PathVariable String teamId){
-        List<TaskDTO> all = taskService.getAllTeam(teamId);
+    public Result<TaskVO> getAllTeam(@PathVariable String teamId){
+        List<TaskVO> all = taskService.getAllTeam(teamId);
         log.info("任务管理-查询所有任务-查询成功");
-        return new Result<TaskDTO>().success(ContentBase.SuccessCode,"查询成功",all);
+        return new Result<TaskVO>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
     @GetMapping("/sel/project/{projectId}")
     @Operation(summary = "查询关于项目的任务")
-    public Result<TaskDTO> getAllProject(@PathVariable String projectId){
-        List<TaskDTO> all = taskService.getAllProject(projectId);
+    public Result<TaskVO> getAllProject(@PathVariable String projectId){
+        List<TaskVO> all = taskService.getAllProject(projectId);
         log.info("任务管理-查询所有任务-查询成功");
-        return new Result<TaskDTO>().success(ContentBase.SuccessCode,"查询成功",all);
+        return new Result<TaskVO>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
     @DeleteMapping("/del/{taskIds}")
@@ -79,7 +78,7 @@ public class TaskController {
 
     @PostMapping("/add")
     @Operation(summary = "新增任务")
-    public Result<Tasks> addTask(@RequestBody TaskVO tasks){
+    public Result<Tasks> addTask(@RequestBody TaskDTO tasks){
         taskService.insert(tasks);
         log.info("任务管理-新增任务-新增成功");
         return new Result<Tasks>().success(ContentBase.SuccessCode,"新增成功",null);

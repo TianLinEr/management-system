@@ -1,8 +1,8 @@
 package com.service.service;
 
-import com.base.dto.TaskDTO;
 import com.base.entity.Tasks;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.base.dto.TaskDTO;
 import com.base.vo.TaskVO;
 
 import java.util.List;
@@ -17,15 +17,15 @@ import java.util.List;
  */
 public interface TasksService extends IService<Tasks> {
 
-    List<TaskDTO> getAll(String userId);
+    List<TaskVO> getAll(String userId);
 
-    List<TaskDTO> getAllTeam(String teamId);
+    List<TaskVO> getAllTeam(String teamId);
 
-    List<TaskDTO> getAllProject(String projectId);
+    List<TaskVO> getAllProject(String projectId);
 
     void delById(String userId,List<Integer> taskIds);
 
-    void insert(TaskVO tasks);
+    void insert(TaskDTO tasks);
 
     void revokeById(String userId,String taskId);
 

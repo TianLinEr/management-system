@@ -1,9 +1,8 @@
-package com.base.vo;
+package com.base.dto;
 
 import lombok.*;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TeamsVO implements Serializable {
+public class TeamDTO implements Serializable {
 
     /**
      * 团队名称

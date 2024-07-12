@@ -5,6 +5,7 @@ import com.base.context.BaseContext;
 import com.base.dto.ProjectDTO;
 import com.base.entity.Projects;
 import com.base.utils.Result;
+import com.base.vo.ProjectVO;
 import com.service.service.ProjectsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,19 +27,19 @@ public class ProjectController {
 
     @GetMapping("/all")
     @Operation(summary = "获取所有项目")
-    public Result<ProjectDTO> getAll(){
+    public Result<ProjectVO> getAll(){
         String userId = BaseContext.getCurrentId().toString();
-        List<ProjectDTO> projectDTOList = projectsService.getAll(userId);
+        List<ProjectVO> projectDTOList = projectsService.getAll(userId);
         log.info("项目管理-获取所有项目-查询成功");
-        return new Result<ProjectDTO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
+        return new Result<ProjectVO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
     }
 
     @GetMapping("/all/public")
     @Operation(summary = "获取所有公开项目")
-    public Result<ProjectDTO> getAllPublic(){
-        List<ProjectDTO> projectDTOList = projectsService.getAllPublic();
+    public Result<ProjectVO> getAllPublic(){
+        List<ProjectVO> projectDTOList = projectsService.getAllPublic();
         log.info("项目管理-获取所有公开项目-查询成功");
-        return new Result<ProjectDTO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
+        return new Result<ProjectVO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
     }
 
     //todo 时区问题
@@ -46,21 +47,21 @@ public class ProjectController {
 
     @GetMapping("/all/my_project")
     @Operation(summary = "获取与我相关的项目")
-    public Result<ProjectDTO> getMyProject(){
+    public Result<ProjectVO> getMyProject(){
         String userId = BaseContext.getCurrentId().toString();
-        List<ProjectDTO> projectDTOList = projectsService.getMyProject(userId);
+        List<ProjectVO> projectDTOList = projectsService.getMyProject(userId);
         log.info("项目管理-获取与我相关的项目-查询成功");
-        return new Result<ProjectDTO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
+        return new Result<ProjectVO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
     }
 
-    @GetMapping("/all/{id}")
+    @GetMapping("/sel/{id}")
     @Operation(summary = "根据id获取项目")
-    Result<ProjectDTO> getById(@PathVariable String id){
-        List<ProjectDTO> projectDTOList = new ArrayList<>();
-        ProjectDTO projectDTO = projectsService.getByProjectId(id);
-        projectDTOList.add(projectDTO);
+    Result<ProjectVO> getById(@PathVariable String id){
+        List<ProjectVO> projectVOList = new ArrayList<>();
+        ProjectVO projectVO = projectsService.getByProjectId(id);
+        projectVOList.add(projectVO);
         log.info("项目管理-根据id获取项目-查询成功");
-        return new Result<ProjectDTO>().success(ContentBase.SuccessCode,"查询成功",projectDTOList);
+        return new Result<ProjectVO>().success(ContentBase.SuccessCode,"查询成功",projectVOList);
     }
 
     @PutMapping("/update")

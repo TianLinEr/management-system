@@ -2,17 +2,16 @@ package com.service.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.content.ContentBase;
-import com.base.dto.TaskDTO;
 import com.base.entity.ProjectTask;
 import com.base.entity.Tasks;
 import com.base.excepttion.UserTypeException;
 import com.base.mapper.ProjectTaskMapper;
 import com.base.mapper.TasksMapper;
+import com.base.dto.TaskDTO;
 import com.base.vo.TaskVO;
 import com.http.client.UserHttp;
 import com.service.service.TasksService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -47,8 +46,8 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
 
     @Override
     @Transactional
-    public List<TaskDTO> getAll(String userId) {
-        List<TaskDTO> task;
+    public List<TaskVO> getAll(String userId) {
+        List<TaskVO> task;
         if (Objects.equals(userId, String.valueOf(ContentBase.AuthorityToAdmin)))
             task = tasksMapper.selectAll();
         else
@@ -57,13 +56,13 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
     }
 
     @Override
-    public List<TaskDTO> getAllTeam(String teamId) {
+    public List<TaskVO> getAllTeam(String teamId) {
 
         return tasksMapper.selectTeam(teamId);
     }
 
     @Override
-    public List<TaskDTO> getAllProject(String projectId) {
+    public List<TaskVO> getAllProject(String projectId) {
         return tasksMapper.selectProject(projectId);
     }
 
@@ -84,7 +83,7 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
 
     @Override
     @Transactional
-    public void insert(TaskVO tasks) {
+    public void insert(TaskDTO tasks) {
         Tasks task = new Tasks(null, tasks.getTaskName(), tasks.getTaskContent()
                 , Timestamp.valueOf(LocalDateTime.now())
                 , Timestamp.valueOf(LocalDateTime.now().plusDays(tasks.getDays()))

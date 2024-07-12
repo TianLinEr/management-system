@@ -4,17 +4,16 @@ import com.base.content.ContentBase;
 import com.base.context.BaseContext;
 import com.base.entity.Teams;
 import com.base.utils.Result;
-import com.base.vo.TeamsVO;
+import com.base.dto.TeamDTO;
+import com.base.vo.TeamVO;
 import com.service.service.TeamsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.GetExchange;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -43,7 +42,7 @@ public class TeamController {
 
     @PostMapping("/add")
     @Operation(summary = "添加团队与成员")
-    public Result addTeam(@RequestBody TeamsVO teamVO){
+    public Result addTeam(@RequestBody TeamDTO teamVO){
         String userId = BaseContext.getCurrentId().toString();
 
         log.info("团队管理-添加团队与成员-添加成功");
@@ -60,11 +59,11 @@ public class TeamController {
 
     @GetMapping("/sel/{teamId}")
     @Operation(summary = "根据Id获取团队")
-    public Result<Teams> getTeam(@PathVariable String teamId){
-        ArrayList<Teams> teams = new ArrayList<>();
-        teams.add(teamService.getById(teamId));
+    public Result<TeamVO> getTeam(@PathVariable String teamId){
+        ArrayList<TeamVO> teams = new ArrayList<>();
+        teams.add(teamService.selById(teamId));
         log.info("团队管理-根据Id获取团队-获取成功");
-        return new Result<Teams>().success(ContentBase.SuccessCode,"获取成功", teams);
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
     }
 
     @DeleteMapping("/del/{teamIds}")
@@ -108,20 +107,21 @@ public class TeamController {
 
     @GetMapping("/all")
     @Operation(summary = "获取所有团队")
-    public Result<Teams> getAllTeam(){
+    public Result<TeamVO> getAllTeam(){
         String userId = BaseContext.getCurrentId().toString();
-        ArrayList<Teams> teams = new ArrayList<>(teamService.getAll(userId));
+        ArrayList<TeamVO> teams = new ArrayList<>(teamService.getAll(userId));
 
         log.info("团队管理-获取所有团队-获取成功");
-        return new Result<Teams>().success(ContentBase.SuccessCode,"获取成功", teams);
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
     }
 
     @GetMapping("/all/{userId}")
-    @Operation(summary = "获取所有团队")
-    public Result<Teams> getAllTeam(@PathVariable String userId){
-
-        ArrayList<Teams> teams = new ArrayList<>(teamService.getAllByUserId(userId));
+    @Operation(summary = "获取该成员所在团队")
+    public Result<TeamVO> getAllTeam(@PathVariable String userId){
+        List<TeamVO> team = teamService.getAllByUserId(userId);
+        ArrayList<TeamVO> teams = new ArrayList<>();
+        teams.addAll(team);
         log.info("团队管理-获取所有团队-获取成功");
-        return new Result<Teams>().success(ContentBase.SuccessCode,"获取成功", teams);
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
     }
 }

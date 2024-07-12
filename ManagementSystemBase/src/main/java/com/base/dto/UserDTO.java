@@ -25,7 +25,6 @@ public class UserDTO implements Serializable {
     /**
      * 用户Id
      */
-    @TableId(value = "user_id", type = IdType.AUTO)
     private Integer userId;
 
     /**

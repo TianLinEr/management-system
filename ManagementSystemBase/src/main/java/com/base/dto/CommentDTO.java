@@ -39,7 +39,7 @@ public class CommentDTO<T> {
     /**
      * 评论人
      */
-    private Users user;
+    private UserVO user;
 
     /**
      * 评论是否被删除，三天后销毁

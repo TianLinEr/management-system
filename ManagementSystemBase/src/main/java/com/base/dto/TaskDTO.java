@@ -1,10 +1,8 @@
 package com.base.dto;
 
 import lombok.*;
-import org.apache.catalina.User;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 /**
  * <p>
@@ -22,11 +20,6 @@ import java.sql.Timestamp;
 public class TaskDTO implements Serializable {
 
     /**
-     * 任务Id
-     */
-    private Integer taskId;
-
-    /**
      * 任务名称
      */
     private String taskName;
@@ -37,19 +30,14 @@ public class TaskDTO implements Serializable {
     private String taskContent;
 
     /**
-     * 创建日期
+     * 任务量
      */
-    private Timestamp createDate;
+    private Integer days;
 
     /**
-     * 截止日期
+     * 项目Id
      */
-    private Timestamp expiryDate;
-
-    /**
-     * 任务进度
-     */
-    private Integer taskProgress;
+    private Integer projectId;
 
     /**
      * 发布人Id
@@ -61,23 +49,4 @@ public class TaskDTO implements Serializable {
      */
     private Integer workUserId;
 
-    /**
-     * 任务是否被删除，三天后销毁
-     */
-    private String taskState;
-
-    /**
-     * 任务状态
-     */
-    private String taskStatus;
-
-    /**
-     * 任务是否公开
-     */
-    private String taskType;
-
-    /**
-     * 任务反馈
-     */
-    private String taskFeedback;
 }

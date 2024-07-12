@@ -4,23 +4,28 @@ package com.http.client;
 import com.base.annotation.NotNeedIntercept;
 import com.base.entity.Documents;
 import com.base.utils.Result;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.service.annotation.DeleteExchange;
-import org.springframework.web.service.annotation.GetExchange;
-import org.springframework.web.service.annotation.HttpExchange;
-
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.cloud.openfeign.FeignClient;
 import java.util.List;
 
-@HttpExchange("http://127.0.0.1:10010/document")
+@FeignClient("document")
 @NotNeedIntercept
 public interface DocumentHttp {
 
-    @GetExchange("/sel/{id}")
-    Result<Documents> getById(@PathVariable String id);
+    @RequestLine("GET /sel/{id}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<Documents> getById(@Param("id") String id);
 
-    @DeleteExchange("/del/{documentIds}")
-    Result<Documents> deleteById(@PathVariable List<Integer> documentIds);
+    @RequestLine("DELETE /del/{documentIds}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<Documents> deleteById(@Param("documnetIds") List<Integer> documentIds);
 
-    @DeleteExchange("/del-project/{projectIds}")
-    Result deleteProjectIds(@PathVariable List<Integer> projectIds);
+    @RequestLine("GET /del-project/{projectIds}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result deleteProjectIds(@Param("projectIds") List<Integer> projectIds);
 }

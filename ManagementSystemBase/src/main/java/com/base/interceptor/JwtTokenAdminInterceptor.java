@@ -9,7 +9,6 @@ import com.base.context.BaseContext;
 import com.base.excepttion.LoginException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.security.SecureDigestAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,13 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             //当前拦截到的不是动态方法，直接放行
             return true;
         }
+
         //判断当前方法是否需要拦截
+//        "ycdy: httpService","service-info: openFeign"
+        String ycdy = request.getHeader("ycdy");
+        String serviceInfo = request.getHeader("service-info");
+        if("httpService".equals(ycdy) || "openFeign".equals(serviceInfo))
+            return true;
 
         // 检查类和方法是否被@NotNeedIntercept注解标记
         if (handlerMethod.getBeanType().isAnnotationPresent(NotNeedIntercept.class) ||
@@ -70,7 +75,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             BaseContext.setCurrentId(empId);
             //3、通过，放行
             return true;
-        } catch (Exception ex) {
+        }catch (Exception e){
             throw new LoginException(ContentBase.ErrorCode);
         }
     }

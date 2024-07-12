@@ -4,14 +4,14 @@ package com.http.client;
 import com.base.annotation.NotNeedIntercept;
 import com.base.entity.Tasks;
 import com.base.utils.Result;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.service.annotation.DeleteExchange;
-import org.springframework.web.service.annotation.GetExchange;
-import org.springframework.web.service.annotation.HttpExchange;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-@HttpExchange("http://127.0.0.1:10010/task")
+@FeignClient("task")
 @NotNeedIntercept
 public interface TaskHttp {
 
@@ -20,12 +20,18 @@ public interface TaskHttp {
      * @param id
      * @return
      */
-    @GetExchange("/sel/{id}")
-    Result<Tasks> getById(@PathVariable String id);
+    @RequestLine("GET /sel/{id}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<Tasks> getById(@Param("id") String id);
 
-    @DeleteExchange("/del/{taskIds}")
-    Result delById(@PathVariable List<Integer> taskIds);
+    @RequestLine("DELETE /del/{taskIds}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result delById(@Param("taskIds") List<Integer> taskIds);
 
-    @DeleteExchange("/del-project/{projectIds}")
-    Result deleteProjectIds(List<Integer> list);
+    @RequestLine("DELETE /del-project/{projectIds}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result deleteProjectIds(@Param("projectIds") List<Integer> list);
 }

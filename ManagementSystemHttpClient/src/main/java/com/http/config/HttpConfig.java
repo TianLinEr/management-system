@@ -1,62 +1,73 @@
 package com.http.config;
 
 import com.http.client.*;
+import feign.Feign;
+import feign.Request;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.support.RestClientAdapter;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.support.WebClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
 public class HttpConfig {
     @Bean
-    public CommentHttp commentHttp(RestClient.Builder restClientBuilder){
-        RestClient restClient = restClientBuilder.build();
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(CommentHttp.class);
+    public CommentHttp commentHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(CommentHttp.class, "http://localhost:10010/comment");
     }
 
     @Bean
-    public DocumentHttp documentHttp(RestClient.Builder restClientBuilder){
-        RestClient restClient = restClientBuilder.build();
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(DocumentHttp.class);
+    public DocumentHttp documentHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(DocumentHttp.class, "http://localhost:10010/document");
     }
 
     @Bean
-    public ProjectHttp projectHttp(RestClient.Builder restClientBuilder){
-        RestClient restClient = restClientBuilder.build();
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(ProjectHttp.class);
+    public ProjectHttp projectHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(ProjectHttp.class, "http://localhost:10010/project");
     }
 
     @Bean
-    public TaskHttp taskHttp(RestClient.Builder restClientBuilder){
-        RestClient restClient = restClientBuilder.build();
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(TaskHttp.class);
+    public TaskHttp taskHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(TaskHttp.class, "http://localhost:10010/task");
     }
 
 
     @Bean
-    public UserHttp userHttp(RestClient.Builder restClientBuilder){
-        RestClient restClient = restClientBuilder.build();
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(UserHttp.class);
+    public UserHttp userHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(UserHttp.class, "http://localhost:10010/user");
     }
 
     @Bean
-    public TeamHttp teamHttp(RestClient.Builder restClientBuilder){
-        RestClient restClient = restClientBuilder.build();
-        RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(TeamHttp.class);
+    public TeamHttp teamHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(TeamHttp.class, "http://localhost:10010/team");
     }
 }

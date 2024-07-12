@@ -2,16 +2,18 @@ package com.http.client;
 
 
 import com.base.annotation.NotNeedIntercept;
-import com.base.entity.Users;
 import com.base.utils.Result;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.service.annotation.GetExchange;
-import org.springframework.web.service.annotation.HttpExchange;
+import com.base.vo.UserVO;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-@HttpExchange("http://127.0.0.1:10010/user")
+
 @NotNeedIntercept
+@FeignClient("user")
 public interface UserHttp {
 
 
@@ -20,14 +22,18 @@ public interface UserHttp {
      * @param id
      * @return
      */
-    @GetExchange("/authority/{id}")
-    Integer getUserAuthority(@PathVariable String id);
+    @RequestLine("GET /authority/{id}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Integer getUserAuthority(@Param("id") String id);
 
     /**
      * 获取用户信息
-     * @param userId
+     * @param userIds
      * @return
      */
-    @GetExchange("/sel/{userId}")
-    Result<Users> getUserInfo(@PathVariable String userId);
+    @RequestLine(value = "GET /sel/{userIds}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<UserVO> getUserInfo(@Param("userIds") List<Integer> userIds);
 }

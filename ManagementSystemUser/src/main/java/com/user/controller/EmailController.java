@@ -55,7 +55,7 @@ public class EmailController {
         return "邮件发送成功";
     }
 
-    @PostMapping("/loginEmail")
+    @PostMapping("/loginCode")
     @Operation(summary = "注册验证码")
     @NotNeedIntercept
     public String loginEmail(@RequestParam("email") String email){

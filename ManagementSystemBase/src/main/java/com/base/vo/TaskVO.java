@@ -1,7 +1,5 @@
 package com.base.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 import java.io.Serializable;
@@ -23,6 +21,11 @@ import java.sql.Timestamp;
 public class TaskVO implements Serializable {
 
     /**
+     * 任务Id
+     */
+    private Integer taskId;
+
+    /**
      * 任务名称
      */
     private String taskName;
@@ -33,14 +36,19 @@ public class TaskVO implements Serializable {
     private String taskContent;
 
     /**
-     * 任务量
+     * 创建日期
      */
-    private Integer days;
+    private String createDate;
 
     /**
-     * 项目Id
+     * 截止日期
      */
-    private Integer projectId;
+    private Timestamp expiryDate;
+
+    /**
+     * 任务进度
+     */
+    private Integer taskProgress;
 
     /**
      * 发布人Id
@@ -52,4 +60,23 @@ public class TaskVO implements Serializable {
      */
     private Integer workUserId;
 
+    /**
+     * 任务是否被删除，三天后销毁
+     */
+    private String taskState;
+
+    /**
+     * 任务状态
+     */
+    private String taskStatus;
+
+    /**
+     * 任务是否公开
+     */
+    private String taskType;
+
+    /**
+     * 任务反馈
+     */
+    private String taskFeedback;
 }

@@ -2,13 +2,14 @@ package com.http.client;
 
 import com.base.annotation.NotNeedIntercept;
 import com.base.dto.ProjectDTO;
-import com.base.entity.Projects;
 import com.base.utils.Result;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.*;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.cloud.openfeign.FeignClient;
 
 
-@HttpExchange("http://127.0.0.1:10010/project")
+@FeignClient("project")
 @NotNeedIntercept
 public interface ProjectHttp {
 
@@ -16,14 +17,18 @@ public interface ProjectHttp {
      * 获取所有项目
      * @return
      */
-    @GetExchange("/all")
+    @RequestLine("GET /all")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
     Result<ProjectDTO> getAll();
 
     /**
      * 获取所有公开项目
      * @return
      */
-    @GetExchange("/all/public")
+    @RequestLine("GET /all/public")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
     Result<ProjectDTO> getAllPublic();
 
 
@@ -31,46 +36,18 @@ public interface ProjectHttp {
      * 获取我的项目
      * @return
      */
-    @GetExchange("/all/my_project")
+    @RequestLine("GET /all/my_project")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
     Result<ProjectDTO> getMyProject();
 
     /**
      * 根据Id获取项目
      * @return
      */
-    @GetExchange("/all/{id}")
-    Result<ProjectDTO> getById(@PathVariable String id);
-
-    /**
-     * 修改项目
-     * @param projects
-     * @return
-     */
-    @PutExchange("/update")
-    Result updateByProject(@RequestBody Projects projects);
-
-    /**
-     * 删除项目
-     * @param projects
-     * @return
-     */
-    @DeleteExchange("/del")
-    Result DelByProjectId(@RequestBody Projects projects);
-
-    /**
-     * 撤销删除项目
-     * @param projects
-     * @return
-     */
-    @PutExchange("/revoke")
-    Result revokeProject(@RequestBody Projects projects);
-
-    /**
-     * 添加项目
-     * @param projects
-     * @return
-     */
-    @PostExchange("/add")
-    Result addProject(@RequestBody Projects projects);
+    @RequestLine("GET /sel/{id}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<ProjectDTO> getById(@Param("id") String id);
 
 }

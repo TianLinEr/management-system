@@ -2,17 +2,16 @@ package com.http.client;
 
 
 import com.base.annotation.NotNeedIntercept;
-import com.base.entity.Teams;
 import com.base.utils.Result;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.service.annotation.DeleteExchange;
-import org.springframework.web.service.annotation.GetExchange;
-import org.springframework.web.service.annotation.HttpExchange;
-import org.springframework.web.service.annotation.PostExchange;
+import com.base.vo.TeamVO;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-@HttpExchange("http://127.0.0.1:10010/team")
+@FeignClient("team")
 @NotNeedIntercept
 public interface TeamHttp {
 
@@ -21,24 +20,30 @@ public interface TeamHttp {
      * @param teamId
      * @return
      */
-    @GetExchange("/sel/{teamId}")
-    Result<Teams> getTeam(@PathVariable String teamId);
+    @RequestLine("GET /sel/{teamId}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<TeamVO> getTeam(@Param("teamId") String teamId);
 
     /**
      * 添加一个临时团队, 参数既是团队Id，又是团队名称
      * 个人直接新增一个项目，隐式新增团队
      * @param team
      */
-    @PostExchange("/add/{team}")
-    Result addTeam(@PathVariable String team);
+    @RequestLine("POST /add/{team}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result addTeam(@Param("team") String team);
 
     /**
      * 团队-用户表，添加一个用户到团队
      * @param teamId
      * @param id
      */
-    @PostExchange("/addUser/{id}/{teamId}")
-    Result addTeamUserLS(@PathVariable String id,@PathVariable String teamId);
+    @RequestLine("POST /addUser/{id}/{teamId}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result addTeamUserLS(@Param("id") String id,@Param("teamId") String teamId);
 
     /**
      * 团队-用户表，得到团队里该用户权限
@@ -46,9 +51,18 @@ public interface TeamHttp {
      * @param teamId
      * @return
      */
-    @GetExchange("/authority/{userId}/{teamId}")
-    Integer getUserAuthority(@PathVariable Integer userId,@PathVariable String teamId);
+    @RequestLine("GET /authority/{userId}/{teamId}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Integer getUserAuthority(@Param("userId") Integer userId,@Param("teamId") String teamId);
 
-    @DeleteExchange("/del-user/{teamIds}")
-    Result delTeamTask(@PathVariable List<Integer> teamIds);
+    /**
+     * 团队-用户表，删除团队
+     * @param teamIds
+     * @return
+     */
+    @RequestLine("DELETE /del-user/{teamIds}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result delTeamTask(@Param("teamIds") List<Integer> teamIds);
 }

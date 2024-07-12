@@ -10,7 +10,10 @@ import com.base.excepttion.SqlSelectException;
 import com.base.excepttion.UserTypeException;
 import com.base.mapper.TeamUserMapper;
 import com.base.mapper.TeamsMapper;
-import com.base.vo.TeamsVO;
+import com.base.dto.TeamDTO;
+import com.base.utils.Result;
+import com.base.vo.TeamVO;
+import com.base.vo.UserVO;
 import com.http.client.UserHttp;
 import com.service.service.TeamsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -81,14 +85,14 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
 
     @Override
     @Transactional
-    public void addTeamGD(TeamsVO teamVO,String userId) {
+    public void addTeamGD(TeamDTO teamVO, String userId) {
         String teamId = "gd-" + Instant.now().getEpochSecond();
         Teams teams = new Teams(teamId
                 , teamVO.getTeamName()
                 , Timestamp.valueOf(LocalDateTime.now())
                 , String.valueOf(ContentBase.TeamNotIsDel));
         teamsMapper.insert(teams);
-        List<TeamUser> list=new ArrayList<>();
+        List<TeamUser> list = new ArrayList<>();
         TeamUser teamUser = new TeamUser(null, teams.getTeamId(), Integer.valueOf(userId)
                 , String.valueOf(ContentBase.AuthorityToDel));
         list.add(teamUser);
@@ -106,14 +110,14 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
         if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin))
             throw new NoAuthorityUpdateTeamException(ContentBase.ErrorCode);
 
-        teamsMapper.delById(teamIds,String.valueOf(ContentBase.TeamIsDel));
+        teamsMapper.delById(teamIds, String.valueOf(ContentBase.TeamIsDel));
     }
 
     @Override
     @Transactional
     public void delById(List<Integer> teamIds) {
 
-        teamsMapper.delById(teamIds,String.valueOf(ContentBase.TeamIsDel));
+        teamsMapper.delById(teamIds, String.valueOf(ContentBase.TeamIsDel));
     }
 
     @Override
@@ -123,9 +127,9 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
         if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin))
             throw new NoAuthorityUpdateTeamException(ContentBase.ErrorCode);
 
-        List<Integer> list=new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         list.add(Integer.valueOf(userId));
-        teamsMapper.delById(list,String.valueOf(ContentBase.TeamNotIsDel));
+        teamsMapper.delById(list, String.valueOf(ContentBase.TeamNotIsDel));
     }
 
     @Override
@@ -135,34 +139,108 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
         Integer teamAuthority = teamUserMapper.selectAuthority(userId, team.getTeamId());
         if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)
                 || Objects.equals(teamAuthority, ContentBase.AuthorityToDel)) {
-            if(team.getTeamName()!=null)
+            if (team.getTeamName() != null)
                 teamsMapper.update(team);
-        }else
+        } else
             throw new NoAuthorityUpdateTeamException(ContentBase.ErrorCode);
     }
 
     @Override
     @Transactional
-    public List<Teams> getAll(String userId) {
+    public List<TeamVO> getAll(String userId) {
         Integer userAuthority = userHttp.getUserAuthority(userId);
         if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin))
             throw new UserTypeException(ContentBase.ErrorCode);
-        return teamsMapper.selectList(new LambdaQueryWrapper<Teams>());
+
+        List<Teams> teamsList = teamsMapper.selectList(new LambdaQueryWrapper<Teams>());
+        List<TeamVO> teamVOList = new ArrayList<>();
+
+        teamsList.forEach(teams -> {
+            List<TeamUser> teamUsers = teamUserMapper.selectList(new LambdaQueryWrapper<TeamUser>().eq(TeamUser::getTeamId, teams.getTeamId()));
+            List<Integer> list = teamUsers.stream().map(TeamUser::getUserId).collect(Collectors.toList());
+            TeamVO teamVO = new TeamVO();
+            if (list.size() != 0) {
+                teamVO = new TeamVO(
+                        teams.getTeamId(),
+                        teams.getTeamName(),
+                        teams.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                        teams.getTeamState(),
+                        userHttp.getUserInfo(list).getRes()
+                );
+            }
+            teamVOList.add(teamVO);
+        });
+
+        return teamVOList;
     }
 
     @Override
     @Transactional
-    public List<Teams> getAllByUserId(String userId) {
-        List<String> list=teamUserMapper.selectTeamList(userId);
-        if(list.size()==0)
+    public List<TeamVO> getAllByUserId(String userId) {
+        List<String> teamIds = teamUserMapper.selectTeamList(userId);
+        if (teamIds.size() == 0)
             return new ArrayList<>();
-        return teamsMapper.selectList(
-                new LambdaQueryWrapper<Teams>().in(Teams::getTeamId, list));
+
+        List<Teams> teamsList = teamsMapper.selectList(
+                new LambdaQueryWrapper<Teams>().in(Teams::getTeamId, teamIds));
+        List<TeamVO> teamVOList = new ArrayList<>();
+        teamsList.forEach(teams -> {
+            List<TeamUser> teamUsers = teamUserMapper.selectList(new LambdaQueryWrapper<TeamUser>().eq(TeamUser::getTeamId, teams.getTeamId()));
+            List<Integer> list = teamUsers.stream().map(TeamUser::getUserId).collect(Collectors.toList());
+            TeamVO teamVO = null;
+            if (list.size() != 0) {
+                teamVO = new TeamVO(
+                        teams.getTeamId(),
+                        teams.getTeamName(),
+                        teams.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                        teams.getTeamState(),
+                        userHttp.getUserInfo(list).getRes()
+                );
+            }
+            teamVOList.add(teamVO);
+        });
+        return teamVOList;
+    }
+
+    @Override
+    public List<Integer> test(String userId) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            Integer userAuthority = userHttp.getUserAuthority(userId);
+            list.add(userAuthority+i);
+        }
+        Result<UserVO> userInfo = userHttp.getUserInfo(list);
+        System.out.println(userInfo.getRes().toString());
+
+        return list;
+    }
+
+    @Override
+    public TeamVO selById(String teamId) {
+        Teams teams = teamsMapper.selectById(teamId);
+        if (teams == null)
+            return null;
+
+        List<Integer> list = teamUserMapper.selectList(
+                new LambdaQueryWrapper<TeamUser>().eq(TeamUser::getTeamId, teamId)
+        ).stream().map(TeamUser::getUserId).collect(Collectors.toList());
+
+        List<UserVO> userVO = null;
+        if(list.size() != 0)
+            userVO=userHttp.getUserInfo(list).getRes();
+
+        return new TeamVO(
+                teams.getTeamId(),
+                teams.getTeamName(),
+                teams.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                teams.getTeamState(),
+                userVO
+        );
     }
 
     @Transactional
     @Scheduled(cron = "* 20 0 * * ?")
-    public void delTeam(){
+    public void delTeam() {
         List<String> teamIds = teamsMapper.selectList(
                 new LambdaQueryWrapper<Teams>().eq(Teams::getTeamState
                         , String.valueOf(ContentBase.TeamIsDel))
