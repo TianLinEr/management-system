@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,7 +100,7 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         commentDTO.setCommentContent(one.getCommentContent());
         commentDTO.setCreateDate(one.getCreateDate());
         commentDTO.setUser(userHttp
-                .getUserInfo(String.valueOf(one.getUserId()))
+                .getUserInfo(one.getUserId().toString())
                 .getRes()
                 .get(0));
         commentDTO.setCommentState(one.getCommentState());
@@ -162,6 +163,12 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         list.add(comments.getCommentId());
         commentsMapper.deleteComment(list, String.valueOf(ContentBase.CommentNotIsDel));
     }
+
+//    @Scheduled(cron = "5 * * * * ? ")
+//    @Transactional
+//    public void test() {
+//        System.out.println(LocalDateTime.now());
+//    }
 
     @Scheduled(cron = "* 0 0 * * ? ")
     @Transactional

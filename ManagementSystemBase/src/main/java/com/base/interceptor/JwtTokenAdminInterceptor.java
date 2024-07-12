@@ -9,6 +9,7 @@ import com.base.context.BaseContext;
 import com.base.excepttion.LoginException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.security.SecureDigestAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -50,14 +51,17 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
                 handlerMethod.getMethod().isAnnotationPresent(NotNeedIntercept.class)) {
             return true; // 不拦截
         }
+//        return true;
 
         //1、从请求头中获取令牌
         String token = request.getHeader(jwtProperties.getAdminTokenName());
+        String key = jwtProperties.getAdminSecretKey();
 
         //2、校验令牌
         try {
             log.info("jwt校验:{}", token);
-            Jws<Claims> claimsJws = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
+            Jws<Claims> claimsJws = JwtUtil.parseJWT(key, token);
+
             Integer empId = Integer.valueOf(claimsJws.getPayload().get(JwtClaimsConstant.USER_ID).toString());
 
             log.info("当前员工id:{}", empId);

@@ -86,7 +86,7 @@ public class TeamController {
         return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
     }
 
-    @PostMapping("/{teamId}")
+    @PostMapping("/revoke/{teamId}")
     @Operation(summary = "恢复团队")
     public Result revoke(@PathVariable String teamId){
         String userId = BaseContext.getCurrentId().toString();
@@ -110,8 +110,8 @@ public class TeamController {
     @Operation(summary = "获取所有团队")
     public Result<Teams> getAllTeam(){
         String userId = BaseContext.getCurrentId().toString();
-
         ArrayList<Teams> teams = new ArrayList<>(teamService.getAll(userId));
+
         log.info("团队管理-获取所有团队-获取成功");
         return new Result<Teams>().success(ContentBase.SuccessCode,"获取成功", teams);
     }

@@ -26,83 +26,85 @@ public class UserController {
 
     @GetMapping("/authority/{id}")
     @Operation(summary = "获取用户权限")
-    public Integer getUserAuthority(@PathVariable String id){
+    public Integer getUserAuthority(@PathVariable String id) {
         log.info("用户管理-获取用户权限-获取成功");
         return userService.getUserAuthority(id);
     }
 
     @GetMapping("/all")
     @Operation(summary = "获取所有用户")
-    public Result<UserVO> getAllUser(){
+    public Result<UserVO> getAllUser() {
         String userId = BaseContext.getCurrentId().toString();
 
         List<Users> users = userService.selectAllUser(userId);
         List<UserVO> userVOS = new ArrayList<>();
         users.forEach(user -> {
             UserVO userVO = new UserVO(
-                    user.getUserId(),user.getUserName(),user.getUserSex(),
-                    null,user.getUserPhone(),null,
+                    user.getUserId(), user.getUserName(), user.getUserSex(),
+                    null, user.getUserPhone(), null,
                     user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                    ,user.getUserEmail(),user.getUserType()
+                    , user.getUserEmail(), user.getUserType()
             );
-            if(user.getUserBirch()!=null)
+            if (user.getUserBirch() != null)
                 userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
             userVOS.add(userVO);
         });
         log.info("用户管理-获取所有用户-获取成功");
-        return new Result<UserVO>().success(ContentBase.SuccessCode,"获取成功",userVOS);
+        return new Result<UserVO>().success(ContentBase.SuccessCode, "获取成功", userVOS);
     }
 
-    @GetMapping("/sel/{userId}")
+    @GetMapping("/sel/{userIds}")
     @Operation(summary = "获取用户信息")
-    public Result<UserVO> getUserInfo(@PathVariable String userId){
-        List<UserVO> users=new ArrayList<>();
-        Users user=userService.selectById(userId);
-        UserVO userVO = new UserVO(
-                user.getUserId(),user.getUserName(),user.getUserSex(),
-                null,user.getUserPhone(),null,
-                user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                ,user.getUserEmail(),user.getUserType()
-        );
-        if(user.getUserBirch()!=null)
-            userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+    public Result<UserVO> getUserInfo(@PathVariable List<Integer> userIds) {
+        List<UserVO> users = new ArrayList<>();
+        List<Users> list = userService.selectById(userIds);
+        list.forEach(user -> {
+            UserVO userVO = new UserVO(
+                    user.getUserId(), user.getUserName(), user.getUserSex(),
+                    null, user.getUserPhone(), null,
+                    user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                    , user.getUserEmail(), user.getUserType()
+            );
+            if (user.getUserBirch() != null)
+                userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-        users.add(userVO);
+            users.add(userVO);
+        });
         log.info("用户管理-获取用户信息-获取成功");
-        return new Result<UserVO>().success(ContentBase.SuccessCode,"获取成功",users);
+        return new Result<UserVO>().success(ContentBase.SuccessCode, "获取成功", users);
     }
 
     @DeleteMapping("/del/{delUserIds}")
     @Operation(summary = "删除用户")
-    public Result delUser(@PathVariable List<Integer> delUserIds){
+    public Result delUser(@PathVariable List<Integer> delUserIds) {
         String userId = BaseContext.getCurrentId().toString();
 
-        userService.deleteById(userId,delUserIds);
+        userService.deleteById(userId, delUserIds);
 
         log.info("用户管理-删除用户-删除成功");
-        return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
+        return new Result<>().success(ContentBase.SuccessCode, "删除成功", null);
     }
 
     @PostMapping("/add")
     @Operation(summary = "添加用户")
-    public Result addUser(@RequestBody Users user){
+    public Result addUser(@RequestBody Users user) {
         String userId = BaseContext.getCurrentId().toString();
 
-        userService.insert(user,userId);
+        userService.insert(user, userId);
 
         log.info("用户管理-添加用户-添加成功");
-        return new Result<>().success(ContentBase.SuccessCode,"添加成功",null);
+        return new Result<>().success(ContentBase.SuccessCode, "添加成功", null);
     }
 
     @PutMapping("/update")
     @Operation(summary = "更新用户")
-    public Result updateUser(@RequestBody Users user){
+    public Result updateUser(@RequestBody Users user) {
         String userId = BaseContext.getCurrentId().toString();
 
-        userService.update(user,userId);
+        userService.update(user, userId);
 
         log.info("用户管理-更新用户-更新成功");
-        return new Result<>().success(ContentBase.SuccessCode,"更新成功",null);
+        return new Result<>().success(ContentBase.SuccessCode, "更新成功", null);
     }
 }

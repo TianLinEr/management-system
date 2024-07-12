@@ -3,63 +3,60 @@ package com.http.config;
 import com.http.client.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class HttpConfig {
     @Bean
-    public ProjectHttp projectHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(ProjectHttp.class);
+    public CommentHttp commentHttp(RestClient.Builder restClientBuilder){
+        RestClient restClient = restClientBuilder.build();
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return factory.createClient(CommentHttp.class);
     }
 
     @Bean
-    public CommentHttp commentHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(CommentHttp.class);
+    public DocumentHttp documentHttp(RestClient.Builder restClientBuilder){
+        RestClient restClient = restClientBuilder.build();
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return factory.createClient(DocumentHttp.class);
     }
 
     @Bean
-    public DocumentHttp documentHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(DocumentHttp.class);
+    public ProjectHttp projectHttp(RestClient.Builder restClientBuilder){
+        RestClient restClient = restClientBuilder.build();
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return factory.createClient(ProjectHttp.class);
     }
 
     @Bean
-    public TaskHttp taskHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(TaskHttp.class);
+    public TaskHttp taskHttp(RestClient.Builder restClientBuilder){
+        RestClient restClient = restClientBuilder.build();
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return factory.createClient(TaskHttp.class);
+    }
+
+
+    @Bean
+    public UserHttp userHttp(RestClient.Builder restClientBuilder){
+        RestClient restClient = restClientBuilder.build();
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return factory.createClient(UserHttp.class);
     }
 
     @Bean
-    public UserHttp userHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(UserHttp.class);
-    }
-
-    @Bean
-    public TeamHttp teamHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(TeamHttp.class);
+    public TeamHttp teamHttp(RestClient.Builder restClientBuilder){
+        RestClient restClient = restClientBuilder.build();
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return factory.createClient(TeamHttp.class);
     }
 }

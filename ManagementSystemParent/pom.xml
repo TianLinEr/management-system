@@ -41,7 +41,7 @@
         <spring.cloud.ali.version>2022.0.0.0-RC2</spring.cloud.ali.version>
         <spring.cloud.version>2023.0.0</spring.cloud.version>
         <log4j.version>1.2.17</log4j.version>
-        <spring.boot.version>3.1.0</spring.boot.version>
+        <spring.boot.version>3.2.4</spring.boot.version>
         <jakarta-servlet.version>6.0.0</jakarta-servlet.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <fastjson.version>1.2.76</fastjson.version>
@@ -52,7 +52,7 @@
         <swagger-annotations.version>2.2.22</swagger-annotations.version>
         <commons-lang3.version>3.10</commons-lang3.version>
         <okhttp.version>4.12.0</okhttp.version>
-        <swagger-knife.version>4.3.0</swagger-knife.version>
+        <swagger-knife.version>4.4.0</swagger-knife.version>
         <elasticsearch.version>7.12.1</elasticsearch.version>
     </properties>
 
@@ -113,6 +113,14 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring.boot.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-webflux</artifactId>
                 <version>${spring.boot.version}</version>
                 <scope>import</scope>
                 <type>pom</type>

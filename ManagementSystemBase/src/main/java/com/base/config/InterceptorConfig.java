@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 @Configuration
 public class InterceptorConfig extends WebMvcConfigurationSupport {
+
+    //todo 与knife4j存在冲突，拦截器添加的路径不能正确放行
+
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
@@ -19,8 +22,19 @@ public class InterceptorConfig extends WebMvcConfigurationSupport {
         //注册自定义拦截器对象
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/login_in","/user/login_up");
+                .excludePathPatterns(
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v3/**",
+                        "/doc.html/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html/**",
+                        "/error/**",
+                        "/actuator/**",
+                        "/user/login_in",
+                        "/user/login_up",
+                        "/login_in",
+                        "/login_up");
 
     }
-
 }

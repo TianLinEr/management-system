@@ -79,8 +79,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     }
 
     @Override
-    public Users selectById(String userId) {
-        Users users = usersMapper.selectById(userId);
+    public List<Users> selectById(List<Integer> userId) {
+        List<Users> users = usersMapper.selectList(
+                new LambdaQueryWrapper<Users>().in(Users::getUserId, userId));
         if(users == null)
             throw new SqlSelectException(ContentBase.ErrorCode);
         return users;

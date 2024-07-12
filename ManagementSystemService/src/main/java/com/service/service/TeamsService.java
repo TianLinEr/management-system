@@ -80,4 +80,11 @@ public interface TeamsService extends IService<Teams> {
      * @return
      */
     List<Teams> getAllByUserId(String userId);
+
+    /**
+     * 获取团队根据Id
+     * @param teamId
+     * @return
+     */
+//    Teams selById(String teamId);
 }

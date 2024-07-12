@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RestController
@@ -36,7 +37,9 @@ public class EmailController {
     @Operation(summary = "发送邮件")
     public String send(@RequestBody EmailVO emailVO){
         Integer id = BaseContext.getCurrentId();
-        Users users = usersService.selectById(String.valueOf(id));
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(id);
+        Users users = usersService.selectById(list).get(0);
         // new一个 简单邮件对象
         SimpleMailMessage mail = new SimpleMailMessage();
 

@@ -28,7 +28,7 @@ spring:
 #日志文件配置路径
 logging:
   level:
-    com: debug
+    com: info
 #Swagger
 #springdoc相关配置
 springdoc:

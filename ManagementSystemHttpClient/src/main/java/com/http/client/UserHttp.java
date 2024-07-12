@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
+import java.util.List;
+
 @HttpExchange("http://127.0.0.1:10010/user")
 @NotNeedIntercept
 public interface UserHttp {
@@ -27,5 +29,5 @@ public interface UserHttp {
      * @return
      */
     @GetExchange("/sel/{userId}")
-    public Result<Users> getUserInfo(@PathVariable String userId);
+    Result<Users> getUserInfo(@PathVariable String userId);
 }

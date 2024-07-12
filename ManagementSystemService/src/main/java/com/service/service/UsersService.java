@@ -34,7 +34,7 @@ public interface UsersService extends IService<Users> {
      * @param userId
      * @return
      */
-    Users selectById(String userId);
+    List<Users> selectById(List<Integer> userId);
 
     /**
      * 修改用户信息
