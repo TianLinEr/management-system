@@ -68,7 +68,7 @@ public class TeamController {
 
     @DeleteMapping("/del/{teamIds}")
     @Operation(summary = "删除团队")
-    public Result delTeam(@PathVariable List<Integer> teamIds){
+    public Result delTeam(@PathVariable List<String> teamIds){
         String userId = BaseContext.getCurrentId().toString();
 
         log.info("团队管理-删除团队-删除成功");
@@ -78,7 +78,7 @@ public class TeamController {
 
     @DeleteMapping("/del-user/{teamIds}")
     @Operation(summary = "删除团队")
-    public Result delTeamTask(@PathVariable List<Integer> teamIds){
+    public Result delTeamTask(@PathVariable List<String> teamIds){
 
         log.info("团队管理-删除团队-删除成功");
         teamService.delById(teamIds);

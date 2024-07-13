@@ -8,6 +8,7 @@
         <result column="project_name" property="projectName"/>
         <result column="project_content" property="projectContent"/>
         <result column="project_create" property="createDate"/>
+        <result column="project_type" property="projectType"/>
         <result column="project_state" property="projectState"/>
         <collection property="team" ofType="com.base.entity.Teams">
             <id column="team_id" property="teamId"/>
@@ -19,14 +20,14 @@
 
     <select id="getAll" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,p2.project_state,t.*
+             ,p2.project_name,p2.project_state,p2.project_type,t.*
         from projects p2
         inner join teams t on p2.team_id=t.team_id
     </select>
 
     <select id="getAllPublic" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,p2.project_state,t.*
+             ,p2.project_name,p2.project_state,p2.project_type,t.*
             from (
                 select * from projects p
                     where p.project_state=#{project_state}
@@ -37,7 +38,7 @@
 
     <select id="getMyProject" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,p2.project_state,t.*
+             ,p2.project_name,p2.project_state,p2.project_type,t.*
         from (
             select * from projects p
                 where p.project_state=#{project_state}

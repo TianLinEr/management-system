@@ -84,6 +84,7 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
                                 item.getProjectContent(),
                                 teamHttp.getTeam(item.getTeam().getTeamId()).getRes().get(0),
                                 item.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                                item.getProjectType(),
                                 item.getProjectState()
                         ));
                     }
@@ -108,10 +109,11 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
                             item.getProjectContent(),
                             teamHttp.getTeam(item.getTeam().getTeamId()).getRes().get(0),
                             item.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                            item.getProjectType(),
                             item.getProjectState()
                     ));
                 }
-       );
+        );
         return res;
     }
 
@@ -131,6 +133,7 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
                             item.getProjectContent(),
                             teamHttp.getTeam(item.getTeam().getTeamId()).getRes().get(0),
                             item.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                            item.getProjectType(),
                             item.getProjectState()
                     ));
                 }
@@ -140,14 +143,17 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
 
     @Override
     @Transactional
-    public void delByProjectId(String id, Projects projects) {
-        Integer authority = teamHttp.getUserAuthority(Integer.valueOf(id), projects.getTeamId());
-        Integer userAuthority = userHttp.getUserAuthority(id);
-        if (authority.equals(ContentBase.AuthorityToDel)
-                || userAuthority.equals(ContentBase.AuthorityToAdmin))
-            projectsMapper.delByProjectId(projects.getProjectId(), String.valueOf(ContentBase.ProjectIsDel));
-        else
-            throw new NoAuthorityUpdateProjectException(ContentBase.ErrorCode);
+    public void delByProjectId(String id, String projectId, String teamId) {
+        Integer authority = userHttp.getUserAuthority(id);
+        if (authority.equals(ContentBase.AuthorityToAdmin))
+            projectsMapper.delByProjectId(Integer.valueOf(projectId), String.valueOf(ContentBase.ProjectIsDel));
+        else {
+            Integer userAuthority = teamHttp.getUserAuthority(Integer.valueOf(id), teamId);
+            if (userAuthority.equals(ContentBase.AuthorityToDel))
+                projectsMapper.delByProjectId(Integer.valueOf(projectId), String.valueOf(ContentBase.ProjectIsDel));
+            else
+                throw new NoAuthorityUpdateProjectException(ContentBase.ErrorCode);
+        }
     }
 
     @Override
@@ -208,6 +214,7 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
                 projects.getProjectContent(),
                 null,
                 projects.getProjectCreate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                projects.getProjectType(),
                 projects.getProjectState()
         );
         Result<TeamVO> team = teamHttp.getTeam(projects.getTeamId());

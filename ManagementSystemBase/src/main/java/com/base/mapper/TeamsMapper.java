@@ -17,7 +17,7 @@ import java.util.List;
 public interface TeamsMapper extends BaseMapper<Teams> {
 
 
-    void delById(List<Integer> teamIds, String state);
+    void delById(List<String> teamIds, String state);
 
     @Update("update teams set team_name = #{teamName} where team_id=#{teamId}")
     void update(Teams team);

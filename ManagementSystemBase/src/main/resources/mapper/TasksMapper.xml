@@ -40,7 +40,7 @@
     </update>
 
     <select id="selectAll" resultType="com.base.vo.TaskVO">
-        select pt.task_id as task_id,
+        select tasks.task_id as task_id,
                task_name,
                task_content,
                create_date,
@@ -53,8 +53,9 @@
                task_status,
                task_type
         from tasks
-                 inner join
-             project_task pt on tasks.task_id = pt.task_id
+            inner join
+             project_task pt
+        on tasks.task_id = pt.task_id
     </select>
 
     <select id="selectMy" resultType="com.base.vo.TaskVO">

@@ -5,7 +5,7 @@ import com.base.context.BaseContext;
 import com.base.entity.Tasks;
 import com.base.utils.Result;
 import com.base.dto.TaskDTO;
-import com.base.vo.TaskVO;
+import com.base.vo.TaskVORes;
 import com.service.service.TasksService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,27 +36,27 @@ public class TaskController {
 
     @GetMapping("/sel")
     @Operation(summary = "查询所有任务")
-    public Result<TaskVO> getAll(){
+    public Result<TaskVORes> getAll(){
         Integer userId = BaseContext.getCurrentId();
-        List<TaskVO> all = taskService.getAll(String.valueOf(userId));
+        List<TaskVORes> all = taskService.getAll(String.valueOf(userId));
         log.info("任务管理-查询所有任务-查询成功");
-        return new Result<TaskVO>().success(ContentBase.SuccessCode,"查询成功",all);
+        return new Result<TaskVORes>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
     @GetMapping("/sel/team/{teamId}")
     @Operation(summary = "查询关于团队的任务")
-    public Result<TaskVO> getAllTeam(@PathVariable String teamId){
-        List<TaskVO> all = taskService.getAllTeam(teamId);
+    public Result<TaskVORes> getAllTeam(@PathVariable String teamId){
+        List<TaskVORes> all = taskService.getAllTeam(teamId);
         log.info("任务管理-查询所有任务-查询成功");
-        return new Result<TaskVO>().success(ContentBase.SuccessCode,"查询成功",all);
+        return new Result<TaskVORes>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
     @GetMapping("/sel/project/{projectId}")
     @Operation(summary = "查询关于项目的任务")
-    public Result<TaskVO> getAllProject(@PathVariable String projectId){
-        List<TaskVO> all = taskService.getAllProject(projectId);
+    public Result<TaskVORes> getAllProject(@PathVariable String projectId){
+        List<TaskVORes> all = taskService.getAllProject(projectId);
         log.info("任务管理-查询所有任务-查询成功");
-        return new Result<TaskVO>().success(ContentBase.SuccessCode,"查询成功",all);
+        return new Result<TaskVORes>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
     @DeleteMapping("/del/{taskIds}")

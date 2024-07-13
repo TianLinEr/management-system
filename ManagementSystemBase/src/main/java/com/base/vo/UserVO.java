@@ -67,4 +67,9 @@ public class UserVO implements Serializable {
      * 用户权限
      */
     private String userType;
+
+    /**
+     * 用户类别
+     */
+    private String userCategory;
 }

@@ -4,11 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.content.ContentBase;
 import com.base.entity.ProjectTask;
 import com.base.entity.Tasks;
+import com.base.excepttion.SqlSelectException;
 import com.base.excepttion.UserTypeException;
 import com.base.mapper.ProjectTaskMapper;
 import com.base.mapper.TasksMapper;
 import com.base.dto.TaskDTO;
+import com.base.vo.ProjectVO;
 import com.base.vo.TaskVO;
+import com.base.vo.TaskVORes;
+import com.base.vo.UserVO;
+import com.http.client.ProjectHttp;
 import com.http.client.UserHttp;
 import com.service.service.TasksService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,10 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +39,8 @@ import java.util.stream.Collectors;
 @Service
 public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements TasksService {
 
+    private static final String[] taskStatus = {"已完成","进行中","未开始"};
+
     @Autowired
     private TasksMapper tasksMapper;
 
@@ -44,26 +50,72 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
     @Autowired
     private UserHttp userHttp;
 
+    @Autowired
+    private ProjectHttp projectHttp;
+
     @Override
     @Transactional
-    public List<TaskVO> getAll(String userId) {
+    public List<TaskVORes> getAll(String userId) {
+        Integer userAuthority = userHttp.getUserAuthority(userId);
         List<TaskVO> task;
-        if (Objects.equals(userId, String.valueOf(ContentBase.AuthorityToAdmin)))
+        if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin))
             task = tasksMapper.selectAll();
         else
             task = tasksMapper.selectMy(userId);
-        return task;
+
+        return getTaskVOResList(task);
+    }
+
+    private List<TaskVORes> getTaskVOResList(List<TaskVO> task) {
+        List<TaskVORes> list = new ArrayList<>();
+        if(task==null ||task.isEmpty())
+            return list;
+
+        task.forEach(item -> {
+            UserVO userPublish = item.getPublishUserId() == null ? null : userHttp.getUserInfo(Collections.singletonList(item.getPublishUserId())).getRes().get(0);
+            UserVO userWork = item.getWorkUserId() == null ? null : userHttp.getUserInfo(Collections.singletonList(item.getWorkUserId())).getRes().get(0);
+
+            ProjectVO projectVO=null;
+            Set<Integer> set = projectTaskMapper.selectList(
+                    new LambdaQueryWrapper<ProjectTask>().eq(ProjectTask::getTaskId, item.getTaskId())
+            ).stream().map(ProjectTask::getProjectId).collect(Collectors.toSet());
+            if(set.size() == 1){
+                Integer next = set.iterator().next();
+                projectVO=projectHttp.getById(String.valueOf(next)).getRes().get(0);
+            }
+
+            list.add(new TaskVORes(
+                    item.getTaskId(),
+                    item.getTaskName(),
+                    item.getTaskContent(),
+                    item.getCreateDate(),
+                    item.getExpiryDate(),
+                    item.getTaskProgress(),
+                    userPublish,
+                    userWork,
+                    item.getTaskState(),
+                    taskStatus[Integer.parseInt(item.getTaskStatus())],
+                    item.getTaskType(),
+                    item.getTaskFeedback(),
+                    projectVO
+            ));
+        });
+
+        return list;
     }
 
     @Override
-    public List<TaskVO> getAllTeam(String teamId) {
+    public List<TaskVORes> getAllTeam(String teamId) {
+        List<TaskVO> task = tasksMapper.selectTeam(teamId);
 
-        return tasksMapper.selectTeam(teamId);
+        return getTaskVOResList(task);
     }
 
     @Override
-    public List<TaskVO> getAllProject(String projectId) {
-        return tasksMapper.selectProject(projectId);
+    public List<TaskVORes> getAllProject(String projectId) {
+        List<TaskVO> task = tasksMapper.selectProject(projectId);
+
+        return getTaskVOResList(task);
     }
 
     @Override
@@ -84,7 +136,11 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
     @Override
     @Transactional
     public void insert(TaskDTO tasks) {
-        Tasks task = new Tasks(null, tasks.getTaskName(), tasks.getTaskContent()
+        String taskName = tasks.getTaskName();
+        if(taskName==null)
+            taskName="task-"+ Instant.now().getEpochSecond();
+
+        Tasks task = new Tasks(null, taskName, tasks.getTaskContent()
                 , Timestamp.valueOf(LocalDateTime.now())
                 , Timestamp.valueOf(LocalDateTime.now().plusDays(tasks.getDays()))
                 , null, tasks.getPublishUserId(), tasks.getWorkUserId()
@@ -133,7 +189,7 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
 
     @Transactional
     @Scheduled(cron = "* 50 23 * * ?")
-    public void delTask(){
+    public void delTask() {
         List<Integer> taskIds = tasksMapper.selectList(
                         new LambdaQueryWrapper<Tasks>().eq(Tasks::getTaskState
                                 , String.valueOf(ContentBase.TaskIsDel)))

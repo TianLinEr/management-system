@@ -35,6 +35,11 @@ public class ProjectDTO{
     private Teams team;
 
     /**
+     * 项目状态
+     */
+    private String projectType;
+
+    /**
      * 创建日期
      */
     private Timestamp createDate;

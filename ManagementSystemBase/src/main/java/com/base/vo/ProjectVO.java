@@ -40,6 +40,11 @@ public class ProjectVO {
     private String createDate;
 
     /**
+     * 项目状态
+     */
+    private String projectType;
+
+    /**
      * 项目是否被删除，三天后销毁
      */
     private String projectState;

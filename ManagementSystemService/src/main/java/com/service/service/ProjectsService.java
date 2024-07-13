@@ -37,11 +37,12 @@ public interface ProjectsService extends IService<Projects> {
     List<ProjectVO> getMyProject(String id);
 
     /**
-     * 根据项目Id删除项目
+     * 删除项目
      * @param id
-     * @param projects
+     * @param projectId
+     * @param teamId
      */
-    void delByProjectId(String id,Projects projects);
+    void delByProjectId(String id,String projectId,String teamId);
 
     /**
      * 更新项目

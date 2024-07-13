@@ -50,6 +50,7 @@ spring:
             allowedOrigins: # 允许哪些网站跨域
               - "http://localhost:8080"
               - "http://10.148.31.18:8080"
+              - "http://10.136.22.186:8080"
             allowed-methods:
               - "GET"
               - "POST"

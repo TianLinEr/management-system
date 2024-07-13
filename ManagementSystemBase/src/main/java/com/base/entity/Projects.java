@@ -44,7 +44,7 @@ public class Projects implements Serializable {
     private String teamId;
 
     /**
-     * 项目是否被公开
+     * 项目状态
      */
     private String projectType;
 

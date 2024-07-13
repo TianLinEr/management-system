@@ -11,6 +11,7 @@ import com.base.excepttion.SqlSelectException;
 import com.base.mapper.DocumentsMapper;
 import com.base.mapper.ProjectDocumentMapper;
 import com.base.utils.Result;
+import com.base.vo.ProjectVO;
 import com.http.client.ProjectHttp;
 import com.http.client.TeamHttp;
 import com.http.client.UserHttp;
@@ -61,12 +62,12 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
 
     @Override
     public String getDir(String projectId) {
-        Result<ProjectDTO> result = projectHttp.getById(projectId);
-        List<ProjectDTO> res = result.getRes();
+        Result<ProjectVO> result = projectHttp.getById(projectId);
+        List<ProjectVO> res = result.getRes();
         if (res.isEmpty())
             throw new SqlSelectException(ContentBase.ErrorCode);
-        ProjectDTO project = res.get(0);
-        Timestamp date = project.getCreateDate();
+        ProjectVO project = res.get(0);
+        Timestamp date = Timestamp.valueOf(project.getCreateDate());
         return date.getTime() + projectId;
     }
 
@@ -92,12 +93,12 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
         Integer userAuthority = userHttp.getUserAuthority(userId);
         if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)) {
             if (!userId.equals(documentDTO.getUserId())) {
-                Result<ProjectDTO> result = projectHttp.getById(projectId);
-                List<ProjectDTO> res = result.getRes();
+                Result<ProjectVO> result = projectHttp.getById(projectId);
+                List<ProjectVO> res = result.getRes();
                 if (res.isEmpty())
                     throw new SqlSelectException(ContentBase.ErrorCode);
 
-                ProjectDTO projects = res.get(0);
+                ProjectVO projects = res.get(0);
                 Integer authority = teamHttp.getUserAuthority(Integer.valueOf(userId), projects.getTeam().getTeamId());
                 if (!Objects.equals(authority, ContentBase.AuthorityToDel))
                     throw new NoAuthorityUpdateDocumentException(ContentBase.ErrorCode);
@@ -126,12 +127,12 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
         Integer userAuthority = userHttp.getUserAuthority(userId);
         if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)) {
             if (!userId.equals(documentDTO.getUserId())) {
-                Result<ProjectDTO> result = projectHttp.getById(projectId);
-                List<ProjectDTO> res = result.getRes();
+                Result<ProjectVO> result = projectHttp.getById(projectId);
+                List<ProjectVO> res = result.getRes();
                 if (res.isEmpty())
                     throw new SqlSelectException(ContentBase.ErrorCode);
 
-                ProjectDTO projects = res.get(0);
+                ProjectVO projects = res.get(0);
                 Integer authority = teamHttp.getUserAuthority(Integer.valueOf(userId), projects.getTeam().getTeamId());
                 if (!Objects.equals(authority, ContentBase.AuthorityToDel))
                     throw new NoAuthorityUpdateDocumentException(ContentBase.ErrorCode);
@@ -151,12 +152,12 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
         if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)) {
             if (!userId.equals(documents.getUserId())) {
                 Integer integer = projectDocumentMapper.selectProjectId(documents.getDocumentId());
-                Result<ProjectDTO> result = projectHttp.getById(String.valueOf(integer));
-                List<ProjectDTO> res = result.getRes();
+                Result<ProjectVO> result = projectHttp.getById(String.valueOf(integer));
+                List<ProjectVO> res = result.getRes();
                 if (res.isEmpty())
                     throw new SqlSelectException(ContentBase.ErrorCode);
 
-                ProjectDTO projects = res.get(0);
+                ProjectVO projects = res.get(0);
                 Integer authority = teamHttp.getUserAuthority(Integer.valueOf(userId), projects.getTeam().getTeamId());
                 if (!Objects.equals(authority, ContentBase.AuthorityToDel))
                     throw new NoAuthorityUpdateDocumentException(ContentBase.ErrorCode);

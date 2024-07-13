@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TaskVO implements Serializable {
+public class TaskVORes implements Serializable {
 
     /**
      * 任务Id
@@ -53,12 +53,12 @@ public class TaskVO implements Serializable {
     /**
      * 发布人Id
      */
-    private Integer publishUserId;
+    private UserVO publishUserId;
 
     /**
      * 完成任务用户Id
      */
-    private Integer workUserId;
+    private UserVO workUserId;
 
     /**
      * 任务是否被删除，三天后销毁
@@ -79,4 +79,9 @@ public class TaskVO implements Serializable {
      * 任务反馈
      */
     private String taskFeedback;
+
+    /**
+     * 所属项目Id
+     */
+    private ProjectVO projectVO;
 }

@@ -44,7 +44,7 @@ public class UserController {
                     user.getUserId(), user.getUserName(), user.getUserSex(),
                     null, user.getUserPhone(), null,
                     user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                    , user.getUserEmail(), user.getUserType()
+                    , user.getUserEmail(), user.getUserType(),null
             );
             if (user.getUserBirch() != null)
                 userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -65,7 +65,7 @@ public class UserController {
                     user.getUserId(), user.getUserName(), user.getUserSex(),
                     null, user.getUserPhone(), null,
                     user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                    , user.getUserEmail(), user.getUserType()
+                    , user.getUserEmail(), user.getUserType(),null
             );
             if (user.getUserBirch() != null)
                 userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));

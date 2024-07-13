@@ -75,12 +75,12 @@ public class ProjectController {
     }
 
     // todo 删除多个项目
-    @DeleteMapping("/del")
+    @DeleteMapping("/del/{projectId}/{teamId}")
     @Operation(summary = "删除项目")
-    public Result DelByProjectId(@RequestBody Projects projects){
+    public Result DelByProjectId(@PathVariable String projectId,@PathVariable String teamId){
         String userId = BaseContext.getCurrentId().toString();
 
-        projectsService.delByProjectId(userId,projects);
+        projectsService.delByProjectId(userId,projectId,teamId);
         log.info("项目管理-删除项目-删除成功");
         return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
     }
