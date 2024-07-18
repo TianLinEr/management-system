@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface TeamUserMapper extends BaseMapper<TeamUser> {
 
-    void insert(List<TeamUser> list);
+    int insert(List<TeamUser> list);
 
     @Select("select authority from team_user where user_id = #{userId} and team_id=#{teamId}")
     Integer selectAuthority(String userId, String teamId);

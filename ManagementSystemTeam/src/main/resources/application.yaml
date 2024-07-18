@@ -29,6 +29,7 @@ spring:
 logging:
   level:
     com: info
+    com.baomidou.mybatisplus.core.mapper: debug
 #Swagger
 #springdoc相关配置
 springdoc:

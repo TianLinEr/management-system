@@ -30,7 +30,7 @@ public interface TasksService extends IService<Tasks> {
 
     void revokeById(String userId,String taskId);
 
-    void update(String userId,Tasks tasks);
+    void update(String userId,TaskVORes tasks);
 
     void delProjectIds(List<Integer> list);
 }

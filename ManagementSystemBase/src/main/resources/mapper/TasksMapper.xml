@@ -33,7 +33,7 @@
     </update>
 
     <update id="delete">
-        update tasks set task_state=#{state} where task_id in
+        update tasks set task_state=#{taskState} where task_id in
         <foreach collection="taskIds" item="item" index="index" open="(" close=")" separator=",">
             #{item}
         </foreach>

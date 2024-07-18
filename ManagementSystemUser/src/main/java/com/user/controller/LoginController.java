@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.*;
@@ -45,7 +46,7 @@ public class LoginController {
             return new Result<UserDTO>().error(ContentBase.ErrorCode, "用户名或密码错误");
         }
 
-        System.out.println(jwtProperties);
+//        System.out.println(jwtProperties);
         //登录成功后，生成jwt令牌
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaimsConstant.USER_ID, user.getUserId());
@@ -57,6 +58,7 @@ public class LoginController {
         user.setToken(token);
         ArrayList<UserDTO> list = new ArrayList<>();
         list.add(user);
+        log.info("用户登入-成功");
         return new Result<UserDTO>().success(ContentBase.SuccessCode, "用户登入", list);
     }
 
@@ -65,18 +67,15 @@ public class LoginController {
     @Transactional
     @NotNeedIntercept
     public Result<UserDTO> login_up(@RequestBody LoginVO loginVO) {
-        Map<LocalDateTime, String> time = BaseContext.getTime(BaseContext.getCurrentId());
+        Map<LocalDateTime, String> time = BaseContext.getTime();
         Map<LocalDateTime, String> map=new HashMap<>();
 
-        long now = LocalDateTime.now().getLong(ChronoField.MILLI_OF_SECOND);
+        LocalDateTime now=LocalDateTime.now();
         time.keySet().forEach(item->{
-            long itemLong = item.getLong(ChronoField.MILLI_OF_SECOND);
-            if(itemLong<now)
+            if(item.isAfter(now))
                 map.put(item,time.get(item));
-            else
-                time.remove(item);
         });
-        BaseContext.setTime(BaseContext.getCurrentId(),map);
+        BaseContext.setTime(map);
         if(!map.containsValue(loginVO.getCode()))
             throw new TimeOutException(ContentBase.ErrorCode);
 

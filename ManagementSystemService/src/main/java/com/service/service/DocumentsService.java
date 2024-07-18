@@ -3,7 +3,9 @@ package com.service.service;
 import com.base.dto.DocumentDTO;
 import com.base.entity.Documents;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.base.vo.DocumentVO;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -29,7 +31,7 @@ public interface DocumentsService extends IService<Documents> {
      * @param url
      * @param userId
      */
-    void addDocument(String fileName, String url, String userId);
+    void addDocument(String fileName, String url, String userId,String projectId);
 
     /**
      * 删除文档
@@ -61,6 +63,9 @@ public interface DocumentsService extends IService<Documents> {
      * @param projectId
      * @return
      */
-    List<DocumentDTO> getDocumentByProjectId(String projectId);
+    List<DocumentVO> getDocumentByProjectId(String projectId);
 
+    DocumentVO selById(String documentId);
+
+    List<DocumentVO> getAll();
 }

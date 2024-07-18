@@ -159,13 +159,16 @@ public class ProjectsServiceImpl extends ServiceImpl<ProjectsMapper, Projects> i
     @Override
     @Transactional
     public void updateByProject(String id, Projects projects) {
-        Integer authority = teamHttp.getUserAuthority(Integer.valueOf(id), projects.getTeamId());
         Integer userAuthority = userHttp.getUserAuthority(id);
-        if (authority.equals(ContentBase.AuthorityToDel)
-                || userAuthority.equals(ContentBase.AuthorityToAdmin))
+        if (userAuthority.equals(ContentBase.AuthorityToAdmin))
             projectsMapper.updateByProject(projects);
-        else
-            throw new NoAuthorityUpdateProjectException(ContentBase.ErrorCode);
+        else {
+            Integer authority = teamHttp.getUserAuthority(Integer.valueOf(id), projects.getTeamId());
+            if (authority.equals(ContentBase.AuthorityToDel))
+                projectsMapper.updateByProject(projects);
+            else
+                throw new NoAuthorityUpdateProjectException(ContentBase.ErrorCode);
+        }
     }
 
     @Override

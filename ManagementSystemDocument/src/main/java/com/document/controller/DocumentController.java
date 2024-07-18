@@ -2,11 +2,10 @@ package com.document.controller;
 
 import com.base.content.ContentBase;
 import com.base.context.BaseContext;
-import com.base.dto.DocumentDTO;
 import com.base.entity.Documents;
 import com.base.excepttion.AddDocumentException;
 import com.base.utils.Result;
-import com.document.config.MinIOConfig;
+import com.base.vo.DocumentVO;
 import com.document.config.MinIOUtil;
 import com.service.service.DocumentsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,13 +13,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.service.annotation.DeleteExchange;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,41 +35,46 @@ public class DocumentController {
     private MinIOUtil minioUtils;
 
     /**
-     * 根据Id获取文档
-     * @param id
+     * 根据项目Id获取文档
+     * @param documentId
      * @return
      */
     @Operation(summary = "根据Id获取文档")
-    @GetMapping("/sel/{id}")
-    Result<Documents> getById(@PathVariable String id){
-        Documents documents = documentsService.getById(id);
-        List<Documents> documentsList = new ArrayList<>();
+    @GetMapping("/sel/{documentId}")
+    Result<DocumentVO> getById(@PathVariable String documentId){
+        DocumentVO documents = documentsService.selById(documentId);
+        List<DocumentVO> documentsList = new ArrayList<>();
         documentsList.add(documents);
         log.info("文档管理-根据Id获取文档-查询成功");
-        return new Result<Documents>().success(ContentBase.SuccessCode, "查询成功", documentsList);
+        return new Result<DocumentVO>().success(ContentBase.SuccessCode, "查询成功", documentsList);
     }
 
     /**
      * 下载文件
+     *
      * @param fileName
      * @param response
      */
     @GetMapping("/download/{projectId}/{fileName}")
     @Operation(summary = "下载文件")
-    public Result download(@PathVariable String projectId,@PathVariable String fileName, HttpServletResponse response) {
+    public String download(@PathVariable String projectId, @PathVariable String fileName, HttpServletResponse response) {
         try {
-            String dir=documentsService.getDir(projectId);
-            InputStream fileInputStream = minioUtils.getObject(dir, fileName);
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            response.setContentType("application/force-download");
-            response.setCharacterEncoding("UTF-8");
-            IOUtils.copy(fileInputStream, response.getOutputStream());
-            return new Result<>().success(ContentBase.SuccessCode, "下载成功", null);
+            String dir = documentsService.getDir(projectId);
+            try (InputStream fileInputStream = minioUtils.getObject(dir, fileName)) {
+                String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+                response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
+                response.setContentType("application/octet-stream"); // 更通用的MIME类型
+                IOUtils.copy(fileInputStream, response.getOutputStream());
+                response.flushBuffer(); // 确保所有数据都被发送
+                log.info("文档管理-下载文件-成功");
+            }
+            return minioUtils.getPresignedObjectUrl(dir, fileName);
         } catch (Exception e) {
-            log.error("下载失败");
-            return new Result<>().error(ContentBase.ErrorCode, "下载失败");
+            log.error("下载失败", e);
+            throw new RuntimeException(e);
         }
     }
+
 
     /**
      * 文件上传
@@ -80,7 +84,7 @@ public class DocumentController {
     @PostMapping("/upload")
     @Operation(summary = "文件上传")
     public Result upload(@RequestParam("file") MultipartFile file,
-                         @RequestParam("project_id" ) String projectId) {
+                         @RequestParam("projectId" ) String projectId) {
         try {
             String userId = BaseContext.getCurrentId().toString();
 
@@ -97,7 +101,7 @@ public class DocumentController {
             minioUtils.uploadFile(dir, file, fileName, contentType);
             log.info("文档管理-文件上传-成功");
             String url = minioUtils.getPresignedObjectUrl(dir, fileName);
-            documentsService.addDocument(fileName,url,userId);
+            documentsService.addDocument(fileName,url,userId,projectId);
             return new Result<>().success(ContentBase.SuccessCode, "上传成功", null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,6 +147,7 @@ public class DocumentController {
             String dir=documentsService.getDir(String.valueOf(id));
             minioUtils.removeBucket(dir);
         });
+        log.info("文档管理-删除-成功");
         return new Result<>().success(ContentBase.SuccessCode, "删除成功", null);
     }
 
@@ -196,9 +201,21 @@ public class DocumentController {
      */
     @GetMapping("/all/{projectId}")
     @Operation(summary = "获取项目文档列表")
-    public Result<DocumentDTO> getDocumentByProjectId(@PathVariable String projectId){
-        List<DocumentDTO> document = documentsService.getDocumentByProjectId(projectId);
+    public Result<DocumentVO> getDocumentByProjectId(@PathVariable String projectId){
+        List<DocumentVO> document = documentsService.getDocumentByProjectId(projectId);
         log.info("文档管理-获取项目文档列表-成功");
-        return new Result<DocumentDTO>().success(ContentBase.SuccessCode, "获取成功", document);
+        return new Result<DocumentVO>().success(ContentBase.SuccessCode, "获取成功", document);
+    }
+
+    /**
+     * 获取文档
+     * @return
+     */
+    @GetMapping("/all")
+    @Operation(summary = "查询所有")
+    public Result<DocumentVO> getAll(){
+        List<DocumentVO> document = documentsService.getAll();
+        log.info("文档管理-查询所有-成功");
+        return new Result<DocumentVO>().success(ContentBase.SuccessCode, "获取成功", document);
     }
 }

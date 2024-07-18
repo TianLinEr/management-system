@@ -42,7 +42,8 @@ spring:
 #日志文件配置路径
 logging:
   level:
-    com: debug
+    com: info
+    com.baomidou.mybatisplus.core.mapper: debug
 #Swagger
 #springdoc相关配置
 springdoc:

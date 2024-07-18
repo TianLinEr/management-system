@@ -1,5 +1,6 @@
 package com.task.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.content.ContentBase;
 import com.base.context.BaseContext;
 import com.base.entity.Tasks;
@@ -43,6 +44,14 @@ public class TaskController {
         return new Result<TaskVORes>().success(ContentBase.SuccessCode,"查询成功",all);
     }
 
+    @GetMapping("/sel-task")
+    @Operation(summary = "查询所有任务")
+    public Result<Tasks> getAllTask(){
+        List<Tasks> list = taskService.list(new LambdaQueryWrapper<>());
+        log.info("任务管理-查询所有任务-查询成功");
+        return new Result<Tasks>().success(ContentBase.SuccessCode,"查询成功",list);
+    }
+
     @GetMapping("/sel/team/{teamId}")
     @Operation(summary = "查询关于团队的任务")
     public Result<TaskVORes> getAllTeam(@PathVariable String teamId){
@@ -79,6 +88,7 @@ public class TaskController {
     @PostMapping("/add")
     @Operation(summary = "新增任务")
     public Result<Tasks> addTask(@RequestBody TaskDTO tasks){
+        tasks.setPublishUserId(BaseContext.getCurrentId());
         taskService.insert(tasks);
         log.info("任务管理-新增任务-新增成功");
         return new Result<Tasks>().success(ContentBase.SuccessCode,"新增成功",null);
@@ -86,7 +96,7 @@ public class TaskController {
 
     @PutMapping("/update")
     @Operation(summary = "修改任务")
-    public Result<Tasks> update(@RequestBody Tasks tasks){
+    public Result<Tasks> update(@RequestBody TaskVORes tasks){
         String userId=BaseContext.getCurrentId().toString();
         taskService.update(userId,tasks);
         log.info("任务管理-修改任务-修改成功");

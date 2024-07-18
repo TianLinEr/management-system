@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -60,6 +61,28 @@ public class UserController {
     public Result<UserVO> getUserInfo(@PathVariable List<Integer> userIds) {
         List<UserVO> users = new ArrayList<>();
         List<Users> list = userService.selectById(userIds);
+        list.forEach(user -> {
+            UserVO userVO = new UserVO(
+                    user.getUserId(), user.getUserName(), user.getUserSex(),
+                    null, user.getUserPhone(), null,
+                    user.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                    , user.getUserEmail(), user.getUserType(),null
+            );
+            if (user.getUserBirch() != null)
+                userVO.setUserBirch(user.getUserBirch().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+            users.add(userVO);
+        });
+        log.info("用户管理-获取用户信息-获取成功");
+        return new Result<UserVO>().success(ContentBase.SuccessCode, "获取成功", users);
+    }
+
+    @GetMapping("/sel-current")
+    @Operation(summary = "获取用户信息")
+    public Result<UserVO> getUser() {
+        Integer currentId = BaseContext.getCurrentId();
+        List<UserVO> users = new ArrayList<>();
+        List<Users> list = userService.selectById(Collections.singletonList(currentId));
         list.forEach(user -> {
             UserVO userVO = new UserVO(
                     user.getUserId(), user.getUserName(), user.getUserSex(),

@@ -57,4 +57,18 @@
                             on documents.document_id=project_document.document_id
         where project_document.project_id=#{projectId}
     </select>
+
+    <select id="selectAll" resultType="com.base.dto.DocumentDTO">
+        select documents.document_id as document_id,
+               document_name,
+               document_url,
+               user_id,
+               create_date,
+               document_state,
+               project_id,
+               document_type
+        from documents
+                 left JOIN project_document
+                            on documents.document_id = project_document.document_id
+    </select>
 </mapper>

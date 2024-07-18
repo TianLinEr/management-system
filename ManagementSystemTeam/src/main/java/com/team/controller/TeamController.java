@@ -24,19 +24,19 @@ public class TeamController {
     @Autowired
     private TeamsService teamService;
 
-    @PostMapping("/add/{team}")
+    @PostMapping("/addTeamLS")
     @Operation(summary = "添加团队")
-    public Result addTeam(@PathVariable String team){
+    public Result addTeam(@RequestParam("team") String team){
         log.info("团队管理-（隐式）添加团队-添加成功");
         teamService.addTeam(team);
         return new Result<>().success(ContentBase.SuccessCode,"添加成功",null);
     }
 
-    @PostMapping("/addUser/{userId}/{teamId}")
+    @PostMapping("/addUser")
     @Operation(summary = "添加团队队员")
-    public Result addTeamUserLS(@PathVariable String userId,@PathVariable String teamId){
-        log.info("团队管理-添加团队队员-添加成功");
+    public Result addTeamUserLS(@RequestParam("userId") String userId,@RequestParam("teamId") String teamId){
         teamService.addTeamUserLS(teamId,userId);
+        log.info("团队管理-添加团队队员-添加成功");
         return new Result<>().success(ContentBase.SuccessCode,"添加成功",null);
     }
 
@@ -121,6 +121,16 @@ public class TeamController {
         List<TeamVO> team = teamService.getAllByUserId(userId);
         ArrayList<TeamVO> teams = new ArrayList<>();
         teams.addAll(team);
+        log.info("团队管理-获取所有团队-获取成功");
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
+    }
+
+    @GetMapping("/all-project/{projectId}")
+    @Operation(summary = "获取该成员所在团队")
+    public Result<TeamVO> getAllTeamByProjectId(@PathVariable String projectId){
+        TeamVO teamVO=teamService.getByProjectId(projectId);
+        ArrayList<TeamVO> teams = new ArrayList<>();
+        teams.add(teamVO);
         log.info("团队管理-获取所有团队-获取成功");
         return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
     }

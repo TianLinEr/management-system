@@ -89,4 +89,6 @@ public interface TeamsService extends IService<Teams> {
      * @return
      */
     TeamVO selById(String teamId);
+
+    TeamVO getByProjectId(String projectId);
 }

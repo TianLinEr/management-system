@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.base.content.ContentBase;
 import com.base.entity.ProjectTask;
 import com.base.entity.Tasks;
+import com.base.entity.TeamUser;
 import com.base.excepttion.SqlSelectException;
 import com.base.excepttion.UserTypeException;
 import com.base.mapper.ProjectTaskMapper;
@@ -126,7 +127,7 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
                 new LambdaQueryWrapper<Tasks>().in(Tasks::getTaskId, taskIds));
         tasks.forEach(item -> {
             if (!Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)
-                    || item.getPublishUserId() != Integer.parseInt(userId))
+                    && item.getPublishUserId() != Integer.parseInt(userId))
                 throw new UserTypeException(ContentBase.ErrorCode);
         });
         tasksMapper.delete(taskIds, String.valueOf(ContentBase.TaskIsDel));
@@ -166,11 +167,29 @@ public class TasksServiceImpl extends ServiceImpl<TasksMapper, Tasks> implements
     }
 
     @Override
-    public void update(String userId, Tasks tasks) {
+    public void update(String userId, TaskVORes tasks) {
+        Tasks task = new Tasks(
+                tasks.getTaskId(),
+                tasks.getTaskName(),
+                tasks.getTaskContent(),
+                Timestamp.valueOf(tasks.getCreateDate()),
+                Timestamp.valueOf(tasks.getExpiryDate()),
+                tasks.getTaskProgress(),
+                tasks.getPublishUserId().getUserId(),
+                tasks.getWorkUserId().getUserId(),
+                tasks.getTaskState(),
+                tasks.getTaskFeedback());
+        ProjectTask projectTask = projectTaskMapper.selectOne(
+                new LambdaQueryWrapper<ProjectTask>().eq(ProjectTask::getTaskId, tasks.getTaskId())
+        );
+        projectTask.setProjectId(tasks.getProjectVO().getProjectId());
+
         Integer userAuthority = userHttp.getUserAuthority(userId);
         if (Objects.equals(userAuthority, ContentBase.AuthorityToAdmin)) {
-            if (tasks.getPublishUserId() == Integer.parseInt(userId))
-                tasksMapper.update(tasks);
+            if (task.getPublishUserId() == Integer.parseInt(userId)){
+                tasksMapper.update(task);
+                projectTaskMapper.update(projectTask);
+            }
             else
                 throw new UserTypeException(ContentBase.ErrorCode);
         } else

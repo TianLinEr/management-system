@@ -1,9 +1,11 @@
 package com.service;
 
 import com.base.annotation.NotNeedIntercept;
+import com.base.entity.Projects;
 import com.base.entity.Teams;
 import com.base.entity.Users;
 import com.base.vo.TeamVO;
+import com.service.service.ProjectsService;
 import com.service.service.TeamsService;
 import com.service.service.UsersService;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ public class test {
     @Autowired
     private TeamsService teamsService;
 
+    @Autowired
+    private ProjectsService projectsService;
+
 
     @Test
     @NotNeedIntercept
@@ -35,5 +40,10 @@ public class test {
 //        for (TeamVO teams : teamsService.getAll("5")) {
 //            System.out.println(teams);
 //        }
+//        Projects projects = new Projects();
+//        projects.setProjectName("测试项目");
+//        projects.setProjectType("0");
+//        projects.setProjectContent("text");
+//        projectsService.addProject("3",projects);
     }
 }

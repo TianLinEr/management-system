@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class BaseContext {
 
-    private static Map<Integer,Map<LocalDateTime,String>> map=new HashMap<>();
+    private static Map<LocalDateTime,String> map=new HashMap<>();
 
     public static ThreadLocal<Integer> threadLocal = new ThreadLocal<>();
 
@@ -18,12 +18,13 @@ public class BaseContext {
         return threadLocal.get();
     }
 
-    public static void setTime(Integer id,Map<LocalDateTime,String> maps) {
-        map.put(id,maps);
+    public static void setTime(Map<LocalDateTime,String> maps) {
+        map=new HashMap<>();
+        map.putAll(maps);
     }
 
-    public static Map<LocalDateTime,String> getTime(Integer id) {
-        return map.get(id);
+    public static Map<LocalDateTime,String> getTime() {
+        return map;
     }
 
     public static void removeCurrentId() {

@@ -63,9 +63,11 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
 
     @Override
     public void addTeamUserLS(String teamId, String userId) {
-        int insert = teamUserMapper.insert(new TeamUser(null, teamId
+        List<TeamUser> list = new ArrayList<>();
+        list.add(new TeamUser(null, teamId
                 , Integer.valueOf(userId)
                 , String.valueOf(ContentBase.AuthorityToAdmin)));
+        int insert = teamUserMapper.insert(list);
         if (insert == 0)
             throw new AddTeamException(ContentBase.ErrorCode);
     }
@@ -97,8 +99,9 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
                 , String.valueOf(ContentBase.AuthorityToDel));
         list.add(teamUser);
         teamVO.getMemberList().forEach(id -> {
-            list.add(new TeamUser(null, teamId, id
-                    , String.valueOf(ContentBase.AuthorityNotToDel)));
+            if (!Objects.equals(id, Integer.valueOf(userId)))
+                list.add(new TeamUser(null, teamId, id
+                        , String.valueOf(ContentBase.AuthorityNotToDel)));
         });
         teamUserMapper.insert(list);
     }
@@ -161,11 +164,11 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
             TeamVO teamVO = new TeamVO();
             if (list.size() != 0) {
                 List<UserVO> userVO = userHttp.getUserInfo(list).getRes();
-                userVO.forEach(item->{
+                userVO.forEach(item -> {
                     item.setUserCategory(teamUserMapper.selectOne(
                             new LambdaQueryWrapper<TeamUser>()
-                                    .eq(TeamUser::getUserId,item.getUserId())
-                                    .eq(TeamUser::getTeamId,teams.getTeamId())
+                                    .eq(TeamUser::getUserId, item.getUserId())
+                                    .eq(TeamUser::getTeamId, teams.getTeamId())
                     ).getAuthority());
                 });
                 teamVO = new TeamVO(
@@ -198,11 +201,11 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
             TeamVO teamVO = null;
             if (list.size() != 0) {
                 List<UserVO> userVO = userHttp.getUserInfo(list).getRes();
-                userVO.forEach(item->{
+                userVO.forEach(item -> {
                     item.setUserCategory(teamUserMapper.selectOne(
                             new LambdaQueryWrapper<TeamUser>()
-                                    .eq(TeamUser::getUserId,item.getUserId())
-                                    .eq(TeamUser::getTeamId,teams.getTeamId())
+                                    .eq(TeamUser::getUserId, item.getUserId())
+                                    .eq(TeamUser::getTeamId, teams.getTeamId())
                     ).getAuthority());
                 });
                 teamVO = new TeamVO(
@@ -220,11 +223,12 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
     }
 
     @Override
+    @Transactional
     public List<Integer> test(String userId) {
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             Integer userAuthority = userHttp.getUserAuthority(userId);
-            list.add(userAuthority+i);
+            list.add(userAuthority + i);
         }
         Result<UserVO> userInfo = userHttp.getUserInfo(list);
         System.out.println(userInfo.getRes().toString());
@@ -233,6 +237,7 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
     }
 
     @Override
+    @Transactional
     public TeamVO selById(String teamId) {
         Teams teams = teamsMapper.selectById(teamId);
         if (teams == null)
@@ -243,13 +248,13 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
         ).stream().map(TeamUser::getUserId).collect(Collectors.toList());
 
         List<UserVO> userVO = null;
-        if(list.size() != 0){
-            userVO=userHttp.getUserInfo(list).getRes();
-            userVO.forEach(item->{
+        if (list.size() != 0) {
+            userVO = userHttp.getUserInfo(list).getRes();
+            userVO.forEach(item -> {
                 item.setUserCategory(teamUserMapper.selectOne(
                         new LambdaQueryWrapper<TeamUser>()
-                                .eq(TeamUser::getUserId,item.getUserId())
-                                .eq(TeamUser::getTeamId,teamId)
+                                .eq(TeamUser::getUserId, item.getUserId())
+                                .eq(TeamUser::getTeamId, teamId)
                 ).getAuthority());
             });
         }
@@ -263,6 +268,20 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
         );
     }
 
+    @Override
+    public TeamVO getByProjectId(String projectId) {
+        Integer teamId = teamsMapper.getTeamId(projectId);
+        List<TeamUser> list = teamUserMapper.selectList(new LambdaQueryWrapper<TeamUser>().eq(TeamUser::getTeamId, teamId));
+        Teams teams = teamsMapper.selectById(teamId);
+        return new TeamVO(
+                teams.getTeamId(),
+                teams.getTeamName(),
+                teams.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                teams.getTeamState(),
+                userHttp.getUserInfo(list.stream().map(TeamUser::getUserId).collect(Collectors.toList())).getRes()
+        );
+    }
+
     @Transactional
     @Scheduled(cron = "* 20 0 * * ?")
     public void delTeam() {
@@ -272,5 +291,8 @@ public class TeamsServiceImpl extends ServiceImpl<TeamsMapper, Teams> implements
         ).stream().map(Teams::getTeamId).collect(Collectors.toList());
 
         teamsMapper.deleteBatchIds(teamIds);
+        teamUserMapper.delete(
+                new LambdaQueryWrapper<TeamUser>().in(TeamUser::getTeamId, teamIds)
+        );
     }
 }

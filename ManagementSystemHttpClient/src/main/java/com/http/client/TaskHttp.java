@@ -16,6 +16,15 @@ import java.util.List;
 public interface TaskHttp {
 
     /**
+     * 查询任务
+     * @return
+     */
+    @RequestLine("GET /sel-task")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<Tasks> getAll();
+
+    /**
      * 根据Id查询任务
      * @param id
      * @return

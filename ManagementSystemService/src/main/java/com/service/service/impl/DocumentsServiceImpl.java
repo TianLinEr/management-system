@@ -5,12 +5,14 @@ import com.base.content.ContentBase;
 import com.base.dto.DocumentDTO;
 import com.base.dto.ProjectDTO;
 import com.base.entity.Documents;
+import com.base.entity.ProjectDocument;
 import com.base.excepttion.AddDocumentException;
 import com.base.excepttion.NoAuthorityUpdateDocumentException;
 import com.base.excepttion.SqlSelectException;
 import com.base.mapper.DocumentsMapper;
 import com.base.mapper.ProjectDocumentMapper;
 import com.base.utils.Result;
+import com.base.vo.DocumentVO;
 import com.base.vo.ProjectVO;
 import com.http.client.ProjectHttp;
 import com.http.client.TeamHttp;
@@ -23,8 +25,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -56,30 +64,85 @@ public class DocumentsServiceImpl extends ServiceImpl<DocumentsMapper, Documents
     private UserHttp userHttp;
 
     @Override
-    public List<DocumentDTO> getDocumentByProjectId(String projectId){
-        return documentsMapper.selectByProjectId(projectId);
+    public List<DocumentVO> getDocumentByProjectId(String projectId) {
+        List<DocumentDTO> list = documentsMapper.selectByProjectId(projectId);
+        List<DocumentVO> res = new ArrayList<>();
+        list.forEach(documentDTO -> {
+            DocumentVO documentVO = new DocumentVO(
+                    documentDTO.getDocumentId(),
+                    documentDTO.getDocumentName(),
+                    documentDTO.getDocumentUrl(),
+                    userHttp.getUserInfo(Collections.singletonList(documentDTO.getUserId())).getRes().get(0),
+                    documentDTO.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    documentDTO.getDocumentState(),
+                    documentDTO.getProjectId(),
+                    documentDTO.getDocumentType());
+            res.add(documentVO);
+        });
+        return res;
+    }
+
+    @Override
+    public DocumentVO selById(String documentId) {
+        Documents documents = documentsMapper.selectOne(
+                new LambdaQueryWrapper<Documents>().eq(Documents::getDocumentId, Integer.valueOf(documentId)));
+        if (documents != null) {
+            return new DocumentVO(
+                    documents.getDocumentId(),
+                    documents.getDocumentName(),
+                    documents.getDocumentUrl(),
+                    userHttp.getUserInfo(Collections.singletonList(documents.getUserId())).getRes().get(0),
+                    documents.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    documents.getDocumentState(),
+                    null,
+                    null);
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<DocumentVO> getAll() {
+        List<DocumentDTO> list = documentsMapper.selectAll();
+        List<DocumentVO> res = new ArrayList<>();
+        list.forEach(documentDTO -> {
+            DocumentVO documentVO = new DocumentVO(
+                    documentDTO.getDocumentId(),
+                    documentDTO.getDocumentName(),
+                    documentDTO.getDocumentUrl(),
+                    userHttp.getUserInfo(Collections.singletonList(documentDTO.getUserId())).getRes().get(0),
+                    documentDTO.getCreateDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    documentDTO.getDocumentState(),
+                    documentDTO.getProjectId(),
+                    documentDTO.getDocumentType());
+            res.add(documentVO);
+        });
+        return res;
     }
 
     @Override
     public String getDir(String projectId) {
+
         Result<ProjectVO> result = projectHttp.getById(projectId);
         List<ProjectVO> res = result.getRes();
         if (res.isEmpty())
             throw new SqlSelectException(ContentBase.ErrorCode);
         ProjectVO project = res.get(0);
-        Timestamp date = Timestamp.valueOf(project.getCreateDate());
-        return date.getTime() + projectId;
+        String createDate = project.getCreateDate();
+        return createDate +"-"+ projectId;
+
     }
 
     @Override
-    public void addDocument(String fileName, String url, String userId) {
+    public void addDocument(String fileName, String url, String userId,String projectId) {
         LocalDateTime localDateTime = LocalDateTime.now();
         Documents documents = new Documents(
                 null, fileName, url,
                 Integer.valueOf(userId),
-                new Timestamp(localDateTime.getLong(ChronoField.MILLI_OF_SECOND)),
+                Timestamp.valueOf(localDateTime),
                 String.valueOf(ContentBase.DocumentNotIsDel));
         int insert = documentsMapper.insert(documents);
+        projectDocumentMapper.insert(new ProjectDocument(null, Integer.valueOf(projectId), documents.getDocumentId(), String.valueOf(ContentBase.DocumentIsPublic)));
         if (insert == 0)
             throw new AddDocumentException(ContentBase.ErrorCode);
     }
