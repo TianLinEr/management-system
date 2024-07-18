@@ -1,5 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.mapper.TasksMapper">
+    <update id="update">
+        update tasks
+        <set>
+            <if test="taskName != null">
+                task_name = #{taskName},
+            </if>
+            <if test="taskName != null">
+                task_content = #{taskContent},
+            </if>
+            <if test="taskName != null">
+                task_progress = #{taskProgress},
+            </if>
+            <if test="taskName != null">
+                task_feedback = #{taskFeedback},
+            </if>
+            <if test="taskName != null">
+                create_date = #{createDate},
+            </if>
+            <if test="taskName != null">
+                expiry_date = #{expiryDate},
+            </if>
+            <if test="taskName != null">
+                publish_user_id = #{publishUserId},
+            </if>
+            <if test="taskName != null">
+                work_user_id = #{workUserId},
+            </if>
+        </set>
+        where task_id = #{taskId}
+    </update>
 
+    <update id="delete">
+        update tasks set task_state=#{taskState} where task_id in
+        <foreach collection="taskIds" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectAll" resultType="com.base.vo.TaskVO">
+        select tasks.task_id as task_id,
+               task_name,
+               task_content,
+               create_date,
+               expiry_date,
+               task_progress,
+               publish_user_id,
+               work_user_id,
+               task_state,
+               task_feedback,
+               task_status,
+               task_type
+        from tasks
+            inner join
+             project_task pt
+        on tasks.task_id = pt.task_id
+    </select>
+
+    <select id="selectMy" resultType="com.base.vo.TaskVO">
+        select pt.task_id as task_id,
+               task_name,
+               task_content,
+               create_date,
+               expiry_date,
+               task_progress,
+               publish_user_id,
+               work_user_id,
+               task_state,
+               task_feedback,
+               task_status,
+               task_type
+        from tasks
+                 inner join
+             project_task pt on tasks.task_id = pt.task_id
+        where publish_user_id = #{userId}
+           or work_user_id = #{userId}
+    </select>
+
+    <select id="selectTeam" resultType="com.base.vo.TaskVO">
+        select pt.task_id as task_id,
+               task_name,
+               task_content,
+               create_date,
+               expiry_date,
+               task_progress,
+               publish_user_id,
+               work_user_id,
+               task_state,
+               task_feedback,
+               task_status,
+               task_type
+        from tasks
+                 inner join
+             project_task pt on tasks.task_id = pt.task_id
+        where project_id = (select project_id
+                            from projects
+                            where team_id = #{teamId})
+    </select>
+
+    <select id="selectProject" resultType="com.base.vo.TaskVO">
+        select pt.task_id as task_id,
+               task_name,
+               task_content,
+               create_date,
+               expiry_date,
+               task_progress,
+               publish_user_id,
+               work_user_id,
+               task_state,
+               task_feedback,
+               task_status,
+               task_type
+        from tasks
+                 inner join
+             project_task pt on tasks.task_id = pt.task_id
+        where project_id = #{projectId}
+    </select>
 </mapper>

@@ -8,6 +8,7 @@
         <result column="project_name" property="projectName"/>
         <result column="project_content" property="projectContent"/>
         <result column="project_create" property="createDate"/>
+        <result column="project_type" property="projectType"/>
         <result column="project_state" property="projectState"/>
         <collection property="team" ofType="com.base.entity.Teams">
             <id column="team_id" property="teamId"/>
@@ -19,17 +20,17 @@
 
     <select id="getAll" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,p2.project_state,t.*
+             ,p2.project_name,p2.project_state,p2.project_type,t.*
         from projects p2
         inner join teams t on p2.team_id=t.team_id
     </select>
 
     <select id="getAllPublic" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,p2.project_state,t.*
+             ,p2.project_name,p2.project_state,p2.project_type,t.*
             from (
                 select * from projects p
-                    where p.project_type=#{project_type} and p.project_state=#{project_state}
+                    where p.project_state=#{project_state}
                 ) as p2
             inner join teams t on p2.team_id=t.team_id
     </select>
@@ -37,11 +38,10 @@
 
     <select id="getMyProject" resultMap="getProjectDTO">
         select p2.project_id,p2.project_content,p2.project_create
-             ,p2.project_name,p2.project_state,t.*
+             ,p2.project_name,p2.project_state,p2.project_type,t.*
         from (
             select * from projects p
-                where p.project_type=#{project_type}
-                and p.project_state=#{project_state}
+                where p.project_state=#{project_state}
                 and p.team_id in (
                     select team_id from team_user where user_id=#{user_id}
                 )
@@ -52,14 +52,17 @@
     <update id="updateByProject">
         update projects
         <set>
-            <if test="project_name != null and project_name != ''">
-                project_name=#{project.projectName}
+            <if test="project.projectName != null and project.projectName != ''">
+                project_name=#{project.projectName},
             </if>
-            <if test="project_content != null and project_content != ''">
-                project_content=#{project.projectContent}
+            <if test="project.projectContent != null and project.projectContent != ''">
+                project_content=#{project.projectContent},
             </if>
-            <if test="project_type != null and project_type != ''">
-                project_type=#{project.projectType}
+            <if test="project.projectType != null and project.projectType != ''">
+                project_type=#{project.projectType},
+            </if>
+            <if test="project.teamId != null and project.teamId != ''">
+                team_id=#{project.teamId},
             </if>
         </set>
         where project_id=#{project.projectId};

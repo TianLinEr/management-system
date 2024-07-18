@@ -3,6 +3,7 @@ package com.base.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 /**
@@ -23,6 +24,7 @@ public class Teams implements Serializable {
     /**
      * 团队Id
      */
+    @TableId(value = "team_id")
     private String teamId;
 
     /**

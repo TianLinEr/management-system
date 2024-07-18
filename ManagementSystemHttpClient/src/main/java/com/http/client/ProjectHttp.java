@@ -1,73 +1,54 @@
 package com.http.client;
 
+import com.base.annotation.NotNeedIntercept;
 import com.base.dto.ProjectDTO;
-import com.base.entity.Projects;
 import com.base.utils.Result;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.*;
+import com.base.vo.ProjectVO;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.cloud.openfeign.FeignClient;
 
 
-@HttpExchange("http://127.0.0.1:10010/project")
+@FeignClient("project")
+@NotNeedIntercept
 public interface ProjectHttp {
 
     /**
      * 获取所有项目
      * @return
      */
-    @GetExchange("/all")
-    Result<ProjectDTO> getAll();
+    @RequestLine("GET /all")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<ProjectVO> getAll();
 
     /**
      * 获取所有公开项目
      * @return
      */
-    @GetExchange("/all/public")
-    Result<ProjectDTO> getAllPublic();
+    @RequestLine("GET /all/public")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<ProjectVO> getAllPublic();
 
 
     /**
      * 获取我的项目
      * @return
      */
-    @GetExchange("/all/my_project")
-    Result<ProjectDTO> getMyProject();
+    @RequestLine("GET /all/my_project")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<ProjectVO> getMyProject();
 
     /**
      * 根据Id获取项目
      * @return
      */
-    @GetExchange("/{id}")
-    Result<ProjectDTO> getById(@PathVariable String id);
+    @RequestLine("GET /sel/{id}")
+    @NotNeedIntercept
+    @Headers({"ycdy: httpService","service-info: openFeign"})
+    Result<ProjectVO> getById(@Param("id") String id);
 
-    /**
-     * 修改项目
-     * @param projects
-     * @return
-     */
-    @PutExchange("/update")
-    Result updateByProject(@RequestBody Projects projects);
-
-    /**
-     * 删除项目
-     * @param projects
-     * @return
-     */
-    @DeleteExchange("/del")
-    Result DelByProjectId(@RequestBody Projects projects);
-
-    /**
-     * 撤销删除项目
-     * @param projects
-     * @return
-     */
-    @PutExchange("/revoke")
-    Result revokeProject(@RequestBody Projects projects);
-
-    /**
-     * 添加项目
-     * @param projects
-     * @return
-     */
-    @PostExchange("/add")
-    Result addProject(@RequestBody Projects projects);
 }

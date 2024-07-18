@@ -1,21 +1,20 @@
 package com.team.controller;
 
 import com.base.content.ContentBase;
+import com.base.context.BaseContext;
 import com.base.entity.Teams;
 import com.base.utils.Result;
+import com.base.dto.TeamDTO;
+import com.base.vo.TeamVO;
 import com.service.service.TeamsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @Tag(name = "团队管理")
@@ -25,20 +24,30 @@ public class TeamController {
     @Autowired
     private TeamsService teamService;
 
-    @PostMapping("/add/{team}")
+    @PostMapping("/addTeamLS")
     @Operation(summary = "添加团队")
-    public Result addTeam(@PathVariable String team){
+    public Result addTeam(@RequestParam("team") String team){
         log.info("团队管理-（隐式）添加团队-添加成功");
         teamService.addTeam(team);
-        return new Result().success(ContentBase.SuccessCode,"添加成功",null);
+        return new Result<>().success(ContentBase.SuccessCode,"添加成功",null);
     }
 
-    @PostMapping("/addUser/{id}/{teamId}")
+    @PostMapping("/addUser")
     @Operation(summary = "添加团队队员")
-    public Result addTeamUserLS(@PathVariable String id,@PathVariable String teamId){
+    public Result addTeamUserLS(@RequestParam("userId") String userId,@RequestParam("teamId") String teamId){
+        teamService.addTeamUserLS(teamId,userId);
         log.info("团队管理-添加团队队员-添加成功");
-        teamService.addTeamUserLS(teamId,id);
-        return new Result().success(ContentBase.SuccessCode,"添加成功",null);
+        return new Result<>().success(ContentBase.SuccessCode,"添加成功",null);
+    }
+
+    @PostMapping("/add")
+    @Operation(summary = "添加团队与成员")
+    public Result addTeam(@RequestBody TeamDTO teamVO){
+        String userId = BaseContext.getCurrentId().toString();
+
+        log.info("团队管理-添加团队与成员-添加成功");
+        teamService.addTeamGD(teamVO,userId);
+        return new Result<>().success(ContentBase.SuccessCode,"添加成功",null);
     }
 
     @GetMapping("/authority/{userId}/{teamId}")
@@ -48,12 +57,81 @@ public class TeamController {
         return teamService.getUserAuthority(userId,teamId);
     }
 
-    @GetMapping("/{teamId}")
+    @GetMapping("/sel/{teamId}")
     @Operation(summary = "根据Id获取团队")
-    Result<Teams> getTeam(@PathVariable String teamId){
-        ArrayList<Teams> teams = new ArrayList<>();
-        teams.add(teamService.getById(teamId));
+    public Result<TeamVO> getTeam(@PathVariable String teamId){
+        ArrayList<TeamVO> teams = new ArrayList<>();
+        teams.add(teamService.selById(teamId));
         log.info("团队管理-根据Id获取团队-获取成功");
-        return new Result().success(ContentBase.SuccessCode,"获取成功", teams);
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
+    }
+
+    @DeleteMapping("/del/{teamIds}")
+    @Operation(summary = "删除团队")
+    public Result delTeam(@PathVariable List<String> teamIds){
+        String userId = BaseContext.getCurrentId().toString();
+
+        log.info("团队管理-删除团队-删除成功");
+        teamService.delById(userId,teamIds);
+        return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
+    }
+
+    @DeleteMapping("/del-user/{teamIds}")
+    @Operation(summary = "删除团队")
+    public Result delTeamTask(@PathVariable List<String> teamIds){
+
+        log.info("团队管理-删除团队-删除成功");
+        teamService.delById(teamIds);
+        return new Result<>().success(ContentBase.SuccessCode,"删除成功",null);
+    }
+
+    @PostMapping("/revoke/{teamId}")
+    @Operation(summary = "恢复团队")
+    public Result revoke(@PathVariable String teamId){
+        String userId = BaseContext.getCurrentId().toString();
+
+        log.info("团队管理-恢复团队-恢复成功");
+        teamService.revokeById(userId,teamId);
+        return new Result<>().success(ContentBase.SuccessCode,"恢复成功",null);
+    }
+
+    @PutMapping ("/update")
+    @Operation(summary = "更新团队")
+    public Result updateTeam(@RequestBody Teams team){
+        String userId = BaseContext.getCurrentId().toString();
+
+        log.info("团队管理-更新团队-更新成功");
+        teamService.updateTeam(userId,team);
+        return new Result<>().success(ContentBase.SuccessCode,"更新成功",null);
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "获取所有团队")
+    public Result<TeamVO> getAllTeam(){
+        String userId = BaseContext.getCurrentId().toString();
+        ArrayList<TeamVO> teams = new ArrayList<>(teamService.getAll(userId));
+
+        log.info("团队管理-获取所有团队-获取成功");
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
+    }
+
+    @GetMapping("/all/{userId}")
+    @Operation(summary = "获取该成员所在团队")
+    public Result<TeamVO> getAllTeam(@PathVariable String userId){
+        List<TeamVO> team = teamService.getAllByUserId(userId);
+        ArrayList<TeamVO> teams = new ArrayList<>();
+        teams.addAll(team);
+        log.info("团队管理-获取所有团队-获取成功");
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
+    }
+
+    @GetMapping("/all-project/{projectId}")
+    @Operation(summary = "获取该成员所在团队")
+    public Result<TeamVO> getAllTeamByProjectId(@PathVariable String projectId){
+        TeamVO teamVO=teamService.getByProjectId(projectId);
+        ArrayList<TeamVO> teams = new ArrayList<>();
+        teams.add(teamVO);
+        log.info("团队管理-获取所有团队-获取成功");
+        return new Result<TeamVO>().success(ContentBase.SuccessCode,"获取成功", teams);
     }
 }

@@ -30,6 +30,11 @@ public class Tasks implements Serializable {
     private Integer taskId;
 
     /**
+     * 任务名称
+     */
+    private String taskName;
+
+    /**
      * 任务介绍
      */
     private String taskContent;

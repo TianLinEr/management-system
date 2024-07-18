@@ -2,4 +2,73 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.mapper.DocumentsMapper">
 
+    <update id="delete">
+        update documents set document_state = #{state}
+        where  document_name=#{fileName}
+        and document_id in(
+            select project_document.document_id from project_document where project_id= #{projectId}
+        )
+    </update>
+
+    <update id="revoke">
+        update documents set document_state = #{state}
+        where  document_name=#{fileName}
+        and document_id in(
+            select project_document.document_id from project_document where project_id= #{projectId}
+        )
+    </update>
+
+    <update id="update">
+        update documents
+        <set>
+            <if test="documentName != null">
+                document_name = #{document.documentName},
+            </if>
+            <if test="documentUrl != null">
+                document_url = #{document.documentUrl},
+            </if>
+        </set>
+        where document_id = #{document.documentId}
+    </update>
+
+    <update id="deleteById">
+        update documents set document_state = #{state}
+        where document_id in
+        <foreach collection="documentIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectOne" resultType="com.base.dto.DocumentDTO">
+        select  documents.document_id as document_id,document_name, document_url,
+                user_id, create_date, document_state, project_id, document_type
+        from documents
+        inner JOIN project_document
+        on documents.document_id=project_document.document_id
+        where document_name=#{fileName}
+        and project_document.project_id=#{projectId}
+    </select>
+
+    <select id="selectByProjectId" resultType="com.base.dto.DocumentDTO">
+        select  documents.document_id as document_id,document_name, document_url,
+                user_id, create_date, document_state, project_id, document_type
+        from documents
+                 inner JOIN project_document
+                            on documents.document_id=project_document.document_id
+        where project_document.project_id=#{projectId}
+    </select>
+
+    <select id="selectAll" resultType="com.base.dto.DocumentDTO">
+        select documents.document_id as document_id,
+               document_name,
+               document_url,
+               user_id,
+               create_date,
+               document_state,
+               project_id,
+               document_type
+        from documents
+                 left JOIN project_document
+                            on documents.document_id = project_document.document_id
+    </select>
 </mapper>

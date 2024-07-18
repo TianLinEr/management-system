@@ -19,11 +19,17 @@ spring:
     url: jdbc:mysql://localhost:3306/management_system
     username: root
     password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  data:
+    redis:
+      database: 6
+      host: localhost
+      port: 6379
 #日志文件配置路径
 logging:
   level:
-    com:
-      api: debug
+    com: info
+    com.baomidou.mybatisplus.core.mapper: debug
 #Swagger
 #springdoc相关配置
 springdoc:
@@ -52,3 +58,12 @@ knife4j:
     username: psl
     # Basic认证密码
     password: psl123
+
+ms:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    adminSecretKey: psl
+    # 设置jwt过期时间
+    adminTtl: 7200000
+    # 设置前端传递过来的令牌名称
+    adminTokenName: token

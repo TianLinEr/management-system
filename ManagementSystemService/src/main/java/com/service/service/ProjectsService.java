@@ -1,8 +1,8 @@
 package com.service.service;
 
-import com.base.dto.ProjectDTO;
 import com.base.entity.Projects;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.base.vo.ProjectVO;
 
 import java.util.List;
 
@@ -21,27 +21,28 @@ public interface ProjectsService extends IService<Projects> {
      * @param id
      * @return
      */
-    List<ProjectDTO> getAll(String id);
+    List<ProjectVO> getAll(String id);
 
     /**
      * 获取所有公开项目
      * @return
      */
-    List<ProjectDTO> getAllPublic();
+    List<ProjectVO> getAllPublic();
 
     /**
      * 获取我的项目
      * @param id
      * @return
      */
-    List<ProjectDTO> getMyProject(String id);
+    List<ProjectVO> getMyProject(String id);
 
     /**
-     * 根据项目Id删除项目
+     * 删除项目
      * @param id
-     * @param projects
+     * @param projectId
+     * @param teamId
      */
-    void delByProjectId(String id,Projects projects);
+    void delByProjectId(String id,String projectId,String teamId);
 
     /**
      * 更新项目
@@ -64,5 +65,11 @@ public interface ProjectsService extends IService<Projects> {
      */
     void addProject(String id,Projects projects);
 
-    ProjectDTO getByProjectId(String id);
+    /**
+     * 获取项目根据项目Id
+     *
+     * @param projectId
+     * @return
+     */
+    ProjectVO getByProjectId(String projectId);
 }

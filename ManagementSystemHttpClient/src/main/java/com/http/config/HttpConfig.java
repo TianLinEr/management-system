@@ -1,65 +1,73 @@
 package com.http.config;
 
 import com.http.client.*;
+import feign.Feign;
+import feign.Request;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.support.WebClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class HttpConfig {
     @Bean
-    public ProjectHttp projectHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(ProjectHttp.class);
+    public CommentHttp commentHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(CommentHttp.class, "http://localhost:10010/comment");
     }
 
     @Bean
-    public CommentHttp commentHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(CommentHttp.class);
+    public DocumentHttp documentHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(DocumentHttp.class, "http://localhost:10010/document");
     }
 
     @Bean
-    public DocumentHttp documentHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(DocumentHttp.class);
+    public ProjectHttp projectHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(ProjectHttp.class, "http://localhost:10010/project");
     }
 
     @Bean
-    public TaskHttp taskHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(TaskHttp.class);
+    public TaskHttp taskHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(TaskHttp.class, "http://localhost:10010/task");
+    }
+
+
+    @Bean
+    public UserHttp userHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(UserHttp.class, "http://localhost:10010/user");
     }
 
     @Bean
-    public UserHttp userHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(UserHttp.class);
-    }
-
-    @Bean
-    public TeamHttp teamHttp() {
-        WebClient webClient = WebClient.builder().build();
-        return HttpServiceProxyFactory
-                .builderFor(WebClientAdapter.create(webClient))
-                .build()
-                .createClient(TeamHttp.class);
+    public TeamHttp teamHttp(){
+        return Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .options(new Request.Options(1000, 3500))
+                //.retryer(new Retryer.Default(5000, 5000, 3))
+                .target(TeamHttp.class, "http://localhost:10010/team");
     }
 }

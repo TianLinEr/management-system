@@ -2,4 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.mapper.ProjectTaskMapper">
 
+    <update id="update">
+        update project_task
+        <set>
+            <if test="taskStatus != null">
+                task_status = #{taskStatus},
+            </if>
+            <if test="taskType != null">
+                task_type = #{taskType},
+            </if>
+            <if test="projectId !=null">
+                project_id = #{projectId},
+            </if>
+        </set>
+        where task_id = #{taskId}
+    </update>
 </mapper>

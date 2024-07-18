@@ -12,5 +12,4 @@ mybatis-plus:
 #日志文件配置路径
 logging:
   level:
-    com:
-      api: debug
+    com: debug

@@ -2,4 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.base.mapper.TeamsMapper">
 
+    <update id="delById">
+        update teams set team_state=#{state} where team_id in
+        <foreach collection="teamIds" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

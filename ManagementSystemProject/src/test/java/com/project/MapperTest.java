@@ -15,9 +15,8 @@ public class MapperTest {
     private ProjectsMapper projectsMapper;
 
     @Test
-    void test01(){
+    void test01() {
         List<ProjectDTO> list = projectsMapper.getAllPublic(
-                String.valueOf(ContentBase.ProjectIsPublic),
                 String.valueOf(ContentBase.ProjectNotIsDel));
         System.out.println(list);
     }
